@@ -7,9 +7,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="SPIRA(숨)" />
-  <link rel="icon" type="image/png" href="/icon.png" />
-  <link rel="apple-touch-icon" sizes="512x512" href="/icon.png" />
-  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" type="image/png" href="./icon.png" />
+  <link rel="apple-touch-icon" sizes="512x512" href="./icon.png" />
+  <link rel="manifest" href="./manifest.json" />
   <title>SPIRA(숨) - 프리다이빙 트레이닝 테이블</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -778,7 +778,7 @@
   <div id="install-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm px-4">
     <div class="w-full max-w-sm rounded-3xl bg-spira-card border border-spira-gold/50 p-6 shadow-2xl text-left">
       <div class="flex items-center gap-3 mb-4">
-        <img id="install-preview-icon" src="/icon.png" alt="SPIRA 앱 아이콘" class="w-12 h-12 rounded-2xl border border-spira-gold/60 bg-spira-bg shrink-0" />
+        <img id="install-preview-icon" src="./icon.png" alt="SPIRA 앱 아이콘" class="w-12 h-12 rounded-2xl border border-spira-gold/60 bg-spira-bg shrink-0" />
         <div>
           <h4 class="font-bold text-base text-white">바탕화면에 SPIRA 아이콘 설치</h4>
           <p class="text-xs text-slate-400">홈 화면 바로가기 및 화면꺼짐 방지 안내</p>
@@ -807,12 +807,11 @@
   <script>
     /**
      * SPIRA(숨) Freediving Training Application
-     * - PWA Manifest & Inline Service Worker for PWABuilder APK packaging
+     * - Relative paths (./manifest.json, ./icon.png) for GitHub Pages compatibility
      * - Screen Wake Lock API: Automatically prevents screen sleep while training timer runs
      * - Clean Korean TTS ('1분', '1분 30', '30', '20', '10', '5~1')
      */
 
-    // Register lightweight Service Worker for offline/PWA readiness
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         const swCode = `
@@ -850,7 +849,7 @@
     const RING_CIRCUMFERENCE = 2 * Math.PI * 112;
 
     // =========================================================================
-    // SCREEN WAKE LOCK (트레이닝 진행 중 화면 자동 꺼짐 방지)
+    // SCREEN WAKE LOCK
     // =========================================================================
     let wakeLockSentinel = null;
 
