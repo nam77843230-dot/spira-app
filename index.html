@@ -6,6 +6,1525 @@
   <meta name="theme-color" content="#041526" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>SPIRA(숨) - 프리다이빙 트레이닝 테이블</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+      background: radial-gradient(circle at 50% 15%, #0e3a63 0%, #061c33 55%, #030f1c 100%);
+      color: #f0f9ff;
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.45;
+    }
+    button, input, select {
+      font-family: inherit;
+      color: inherit;
+    }
+    button {
+      cursor: pointer;
+    }
+    .hidden {
+      display: none !important;
+    }
+    .app-shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 16px 16px 48px;
+    }
+    .glass-card {
+      background: rgba(10, 38, 66, 0.82);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      box-shadow: 0 12px 32px rgba(2, 12, 27, 0.55);
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid rgba(103, 232, 249, 0.5);
+      object-fit: cover;
+    }
+    .brand-title-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .brand-title {
+      font-size: 18px;
+      font-weight: 900;
+      color: #ffffff;
+    }
+    .brand-badge {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(34, 211, 238, 0.2);
+      color: #67e8f9;
+      border: 1px solid rgba(34, 211, 238, 0.35);
+    }
+    .brand-sub {
+      font-size: 11px;
+      color: rgba(186, 230, 253, 0.78);
+    }
+    .controls-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .chip-btn {
+      padding: 7px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+      color: #e0f2fe;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .chip-btn.active-cyan {
+      background: rgba(6, 182, 212, 0.28);
+      border-color: rgba(34, 211, 238, 0.65);
+      color: #cffafe;
+    }
+    .chip-btn.active-sky {
+      background: rgba(14, 165, 233, 0.24);
+      border-color: rgba(56, 189, 248, 0.55);
+      color: #e0f2fe;
+    }
+    .chip-btn.active-emerald {
+      background: rgba(16, 185, 129, 0.22);
+      border-color: rgba(52, 211, 153, 0.55);
+      color: #d1fae5;
+    }
+    .chip-btn.muted {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.12);
+      color: #94a3b8;
+    }
+    .toast-banner {
+      margin-bottom: 12px;
+      padding: 10px 14px;
+      border-radius: 14px;
+      background: rgba(8, 51, 68, 0.95);
+      border: 1px solid rgba(34, 211, 238, 0.55);
+      color: #cffafe;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+    }
+    .mode-nav {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding: 6px;
+    }
+    .mode-tab {
+      padding: 10px 8px;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 800;
+      border: none;
+      background: transparent;
+      color: #bae6fd;
+    }
+    .mode-tab.selected {
+      background: #22d3ee;
+      color: #020617;
+      box-shadow: 0 4px 14px rgba(34, 211, 238, 0.35);
+    }
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+    .card-desc {
+      font-size: 12px;
+      color: rgba(186, 230, 253, 0.82);
+      margin-top: 3px;
+    }
+    .round-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 10px;
+      background: rgba(8, 47, 73, 0.95);
+      border: 1px solid rgba(34, 211, 238, 0.35);
+      color: #67e8f9;
+      white-space: nowrap;
+    }
+    .pb-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .pb-input-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pb-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fcd34d;
+    }
+    .pb-box {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(2, 6, 23, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 12px;
+      padding: 6px 10px;
+    }
+    .pb-num {
+      width: 38px;
+      background: transparent;
+      border: none;
+      text-align: center;
+      font-weight: 800;
+      font-size: 14px;
+      color: #ffffff;
+      outline: none;
+    }
+    .btn-primary-sm {
+      padding: 8px 13px;
+      border-radius: 12px;
+      border: none;
+      font-size: 12px;
+      font-weight: 800;
+      background: linear-gradient(90deg, #22d3ee, #38bdf8);
+      color: #020617;
+    }
+    .btn-secondary-sm {
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #e0f2fe;
+    }
+    .static-select {
+      background: rgba(2, 6, 23, 0.92);
+      border: 1px solid rgba(34, 211, 238, 0.45);
+      border-radius: 12px;
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+    .timer-card {
+      border-radius: 26px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .timer-meta-bar {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .round-pill {
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #a5f3fc;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+    .total-rem-text {
+      color: rgba(186, 230, 253, 0.88);
+      font-variant-numeric: tabular-nums;
+    }
+    .ring-wrap {
+      position: relative;
+      width: 260px;
+      height: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 8px 0;
+    }
+    .ring-svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+    .ring-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 16px;
+    }
+    .phase-pill {
+      font-size: 13px;
+      font-weight: 800;
+      padding: 3px 12px;
+      border-radius: 999px;
+      margin-bottom: 6px;
+      white-space: nowrap;
+    }
+    .phase-pill.breathe {
+      background: rgba(251, 191, 36, 0.25);
+      color: #fde68a;
+      border: 1px solid rgba(252, 211, 77, 0.5);
+    }
+    .phase-pill.hold {
+      background: rgba(56, 189, 248, 0.25);
+      color: #bae6fd;
+      border: 1px solid rgba(125, 211, 252, 0.5);
+    }
+    .main-clock {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-variant-numeric: tabular-nums;
+      font-size: 54px;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: -1px;
+      line-height: 1.05;
+    }
+    .next-hint {
+      font-size: 12px;
+      color: rgba(186, 230, 253, 0.82);
+      margin-top: 8px;
+      font-weight: 600;
+    }
+    .main-btn-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .ctrl-btn {
+      padding: 14px 8px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 800;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #e0f2fe;
+    }
+    .ctrl-btn.start {
+      font-size: 16px;
+      font-weight: 900;
+      border: none;
+      background: linear-gradient(90deg, #22d3ee, #38bdf8);
+      color: #020617;
+      box-shadow: 0 0 24px rgba(34, 211, 238, 0.45);
+    }
+    .ctrl-btn.pause {
+      font-size: 16px;
+      font-weight: 900;
+      border: none;
+      background: #fbbf24;
+      color: #020617;
+      box-shadow: 0 0 24px rgba(251, 191, 36, 0.45);
+    }
+    .static-finish-btn {
+      margin-top: 12px;
+      width: 100%;
+      padding: 13px;
+      border-radius: 16px;
+      border: none;
+      font-size: 14px;
+      font-weight: 900;
+      background: #34d399;
+      color: #020617;
+    }
+    .sched-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .rounds-scroll {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 320px;
+      overflow-y: auto;
+    }
+    .round-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px;
+      border-radius: 14px;
+      background: rgba(2, 6, 23, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .round-row.active {
+      background: rgba(34, 211, 238, 0.16);
+      border-color: rgba(103, 232, 249, 0.65);
+    }
+    .round-num-badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 900;
+      background: rgba(255, 255, 255, 0.12);
+      color: #bae6fd;
+    }
+    .round-row.active .round-num-badge {
+      background: #22d3ee;
+      color: #020617;
+    }
+    .round-inputs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .round-field {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .round-field input {
+      width: 52px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 8px;
+      padding: 4px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+    .del-btn {
+      background: transparent;
+      border: none;
+      color: #fda4af;
+      font-size: 13px;
+      padding: 4px 6px;
+    }
+    @keyframes pulseRingHold {
+      0%, 100% { filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.45)); }
+      50% { filter: drop-shadow(0 0 18px rgba(34, 211, 238, 0.9)); }
+    }
+    @keyframes pulseRingBreathe {
+      0%, 100% { filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.4)); }
+      50% { filter: drop-shadow(0 0 18px rgba(251, 191, 36, 0.85)); }
+    }
+    .ring-hold-pulse { animation: pulseRingHold 2.4s ease-in-out infinite; }
+    .ring-breathe-pulse { animation: pulseRingBreathe 2.8s ease-in-out infinite; }
+  </style>
+</head>
+<body>
+
+  <div id="main-app" class="app-shell">
+
+    <!-- Top Header -->
+    <header class="header-bar">
+      <div class="brand-box">
+        <img src="./icon.png" alt="SPIRA" onerror="this.style.display='none'" class="brand-logo" />
+        <div>
+          <div class="brand-title-row">
+            <span class="brand-title">SPIRA(숨)</span>
+            <span class="brand-badge">APNEA</span>
+          </div>
+          <p class="brand-sub">프리다이빙 호흡 트레이닝</p>
+        </div>
+      </div>
+
+      <!-- Audio & PIP Controls -->
+      <div class="controls-row">
+        <button id="toggle-voice-btn" type="button" class="chip-btn active-cyan">
+          <span id="voice-icon">🗣️</span>
+          <span id="voice-label">음성 ON</span>
+        </button>
+        <button id="toggle-beep-btn" type="button" class="chip-btn active-sky">
+          <span id="beep-icon">🥁</span>
+          <span id="beep-label">북소리 ON</span>
+        </button>
+        <button id="pip-toggle-btn" type="button" class="chip-btn active-emerald">
+          🪟 미니창
+        </button>
+        <button id="test-voice-btn" type="button" class="chip-btn">
+          🔊 테스트
+        </button>
+      </div>
+    </header>
+
+    <!-- Toast Banner -->
+    <div id="toast-banner" class="toast-banner hidden"></div>
+
+    <!-- Mode Tabs -->
+    <nav class="glass-card mode-nav" aria-label="트레이닝 모드 선택">
+      <button type="button" data-mode="co2" class="mode-tab selected">CO₂ 테이블</button>
+      <button type="button" data-mode="o2" class="mode-tab">O₂ 테이블</button>
+      <button type="button" data-mode="static" class="mode-tab">스태틱 (STA)</button>
+    </nav>
+
+    <!-- PB Auto-Generator Card -->
+    <section id="pb-generator-card" class="glass-card">
+      <div class="card-top">
+        <div>
+          <h2 id="mode-title" class="card-title">CO₂ 내성 트레이닝 테이블</h2>
+          <p id="mode-desc" class="card-desc">일정한 숨참기(PB의 50%)를 유지하며 준비 호흡 시간을 점진적으로 줄입니다.</p>
+        </div>
+        <span id="round-count-badge" class="round-badge">총 8 라운드</span>
+      </div>
+
+      <div class="pb-bar">
+        <div class="pb-input-group">
+          <span class="pb-label">내 최고 기록(PB):</span>
+          <div class="pb-box">
+            <input id="pb-min-input" type="number" min="0" max="15" value="2" class="pb-num" />
+            <span style="font-size:12px;color:#7dd3fc;">분</span>
+            <input id="pb-sec-input" type="number" min="0" max="59" value="0" class="pb-num" />
+            <span style="font-size:12px;color:#7dd3fc;">초</span>
+          </div>
+        </div>
+
+        <div class="controls-row">
+          <button id="apply-pb-btn" type="button" class="btn-primary-sm">⚡ PB 자동 계산</button>
+          <button id="add-round-btn" type="button" class="btn-secondary-sm">+ 라운드</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Static Mode Prep Card -->
+    <section id="static-settings-card" class="glass-card hidden">
+      <div class="card-top" style="margin-bottom:0;align-items:center;">
+        <div>
+          <h2 class="card-title">스태틱 압네아 (최대 숨참기 측정)</h2>
+          <p class="card-desc">준비 호흡 후 숨을 참으면 경과 시간(30초/1분 단위)을 음성으로 안내합니다.</p>
+        </div>
+        <div class="controls-row">
+          <label for="static-prep-sec" class="pb-label">준비 호흡:</label>
+          <select id="static-prep-sec" class="static-select">
+            <option value="0">바로 숨참기 (0초)</option>
+            <option value="30">30초 준비호흡</option>
+            <option value="60" selected>1분 (60초) 준비호흡</option>
+            <option value="120">2분 (120초) 준비호흡</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Circular Timer -->
+    <section class="glass-card timer-card">
+      <div class="timer-meta-bar">
+        <span id="current-round-label" class="round-pill">ROUND 1 / 8</span>
+        <span id="total-remaining-label" class="total-rem-text">전체 남은 시간 17:05</span>
+      </div>
+
+      <div class="ring-wrap">
+        <svg class="ring-svg" viewBox="0 0 260 260">
+          <circle cx="130" cy="130" r="112" fill="none" stroke="rgba(255,255,255,0.09)" stroke-width="14" />
+          <circle id="timer-progress-ring" cx="130" cy="130" r="112" fill="none" stroke="#fbbf24"
+            stroke-width="14" stroke-linecap="round"
+            stroke-dasharray="703.72" stroke-dashoffset="0"
+            style="transition: stroke-dashoffset 0.35s linear, stroke 0.35s ease;" />
+        </svg>
+
+        <div class="ring-center">
+          <span id="phase-badge" class="phase-pill breathe">준비 호흡</span>
+          <div id="main-timer-display" class="main-clock">02:00</div>
+          <p id="next-phase-hint" class="next-hint">다음: 숨참기 01:00</p>
+        </div>
+      </div>
+
+      <div class="main-btn-grid">
+        <button id="reset-btn" type="button" class="ctrl-btn">↺ 초기화</button>
+        <button id="start-pause-btn" type="button" class="ctrl-btn start">▶ 시작</button>
+        <button id="skip-btn" type="button" class="ctrl-btn">다음 단계 ⏭</button>
+      </div>
+
+      <button id="static-finish-btn" type="button" class="static-finish-btn hidden">
+        🏁 숨참기 종료 및 기록 저장
+      </button>
+    </section>
+
+    <!-- Round Schedule Table -->
+    <section id="schedule-section" class="glass-card">
+      <div class="sched-header">
+        <h3 class="card-title">라운드별 세부 시간표</h3>
+        <span id="total-session-duration" style="font-size:12px;color:#7dd3fc;font-weight:700;">총 17:05</span>
+      </div>
+      <div id="rounds-list" class="rounds-scroll"></div>
+    </section>
+
+    <!-- Static Records History -->
+    <section id="static-history-section" class="glass-card hidden">
+      <div class="sched-header">
+        <h3 class="card-title">최근 스태틱 측정 기록</h3>
+        <button id="clear-static-history" type="button" class="del-btn">기록 비우기</button>
+      </div>
+      <div id="static-history-list" class="rounds-scroll">
+        <p style="text-align:center;padding:12px;color:#7dd3fc;">아직 측정된 기록이 없습니다.</p>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Hidden elements for Floating PIP & Background Keep-Alive -->
+  <canvas id="pip-canvas" width="360" height="220" class="hidden"></canvas>
+  <video id="pip-video" muted playsinline class="hidden"></video>
+  <audio id="bg-keepalive-audio" loop playsinline preload="auto" class="hidden"></audio>
+
+  <script>
+    const STORAGE_KEY = 'spira_freedive_state_v4';
+
+    const state = {
+      mode: 'co2',
+      pbSeconds: 120,
+      rounds: [],
+      currentRoundIndex: 0,
+      phase: 'breathe',
+      remainingSeconds: 120,
+      phaseTotalSeconds: 120,
+      isRunning: false,
+      voiceEnabled: true,
+      beepEnabled: true,
+      staticPrepSeconds: 60,
+      staPhase: 'prep',
+      staticElapsedSeconds: 0,
+      staticHistory: []
+    };
+
+    let timerInterval = null;
+    let bgWorker = null;
+    let lastTickEpoch = 0;
+    let audioCtx = null;
+    let voiceMasterGain = null;
+    let voiceClarityEQ = null;
+    let keepAliveSource = null;
+    let silentWavUrl = null;
+    let wakeLockSentinel = null;
+
+    function showToast(msg) {
+      const banner = document.getElementById('toast-banner');
+      if (!banner) return;
+      banner.textContent = msg;
+      banner.classList.remove('hidden');
+      clearTimeout(banner._hideTimer);
+      banner._hideTimer = setTimeout(() => banner.classList.add('hidden'), 3500);
+    }
+
+    function unlockAudio() {
+      try {
+        if (!audioCtx) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          if (AudioContextClass) {
+            audioCtx = new AudioContextClass();
+
+            voiceClarityEQ = audioCtx.createBiquadFilter();
+            voiceClarityEQ.type = 'peaking';
+            voiceClarityEQ.frequency.setValueAtTime(2200, audioCtx.currentTime);
+            voiceClarityEQ.Q.setValueAtTime(1.1, audioCtx.currentTime);
+            voiceClarityEQ.gain.setValueAtTime(6.0, audioCtx.currentTime);
+
+            const compressor = audioCtx.createDynamicsCompressor();
+            compressor.threshold.setValueAtTime(-20, audioCtx.currentTime);
+            compressor.knee.setValueAtTime(14, audioCtx.currentTime);
+            compressor.ratio.setValueAtTime(6, audioCtx.currentTime);
+            compressor.attack.setValueAtTime(0.005, audioCtx.currentTime);
+            compressor.release.setValueAtTime(0.18, audioCtx.currentTime);
+
+            voiceMasterGain = audioCtx.createGain();
+            voiceMasterGain.gain.setValueAtTime(1.75, audioCtx.currentTime);
+
+            voiceClarityEQ.connect(compressor);
+            compressor.connect(voiceMasterGain);
+            voiceMasterGain.connect(audioCtx.destination);
+          }
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+      } catch (e) {}
+    }
+
+    // Warm, deep acoustic bass drum / timpani "덩~" sound
+    function playTone(freq = 92, duration = 0.55, type = 'sine', volume = 0.30) {
+      if (!state.beepEnabled) return;
+      try {
+        unlockAudio();
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+
+        const oscBody = audioCtx.createOscillator();
+        const oscSub = audioCtx.createOscillator();
+        const filter = audioCtx.createBiquadFilter();
+        const env = audioCtx.createGain();
+
+        oscBody.type = 'sine';
+        oscBody.frequency.setValueAtTime(Math.max(70, freq * 1.15), now);
+        oscBody.frequency.exponentialRampToValueAtTime(62, now + 0.16);
+
+        oscSub.type = 'sine';
+        oscSub.frequency.setValueAtTime(55, now);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(185, now);
+
+        const peak = Math.min(0.45, volume);
+        env.gain.setValueAtTime(0.0001, now);
+        env.gain.linearRampToValueAtTime(peak, now + 0.012);
+        env.gain.exponentialRampToValueAtTime(0.0001, now + Math.max(0.35, duration));
+
+        oscBody.connect(filter);
+        oscSub.connect(filter);
+        filter.connect(env);
+        env.connect(audioCtx.destination);
+
+        oscBody.start(now);
+        oscSub.start(now);
+        oscBody.stop(now + duration + 0.05);
+        oscSub.stop(now + duration + 0.05);
+      } catch (e) {}
+    }
+
+    function playTransitionChime(isHoldStart = true) {
+      if (!state.beepEnabled) return;
+      playTone(isHoldStart ? 92 : 104, 0.52, 'sine', 0.36);
+      setTimeout(() => {
+        playTone(isHoldStart ? 82 : 112, 0.62, 'sine', 0.38);
+      }, 240);
+    }
+
+    function toClearKoreanSpoken(rawText) {
+      const map = {
+        '30': '삼십',
+        '20': '이십',
+        '10': '십',
+        '9': '구',
+        '8': '팔',
+        '7': '칠',
+        '6': '육',
+        '5': '오',
+        '4': '사',
+        '3': '삼',
+        '2': '이',
+        '1': '일'
+      };
+      const trimmed = String(rawText).trim();
+      return map[trimmed] || trimmed;
+    }
+
+    function speakKorean(text, interrupt = false) {
+      if (!state.voiceEnabled) return;
+      const spokenText = toClearKoreanSpoken(text);
+      try {
+        if ('speechSynthesis' in window) {
+          if (interrupt) {
+            window.speechSynthesis.cancel();
+          }
+          const utter = new SpeechSynthesisUtterance(spokenText);
+          utter.lang = 'ko-KR';
+          utter.volume = 1.0;
+          utter.rate = 0.96;
+          utter.pitch = 1.04;
+
+          const voices = window.speechSynthesis.getVoices();
+          const koVoice = voices.find(v => v.lang && v.lang.toLowerCase().includes('ko'));
+          if (koVoice) utter.voice = koVoice;
+
+          window.speechSynthesis.speak(utter);
+        }
+      } catch (e) {}
+    }
+
+    function createSilentWavUrl() {
+      if (silentWavUrl) return silentWavUrl;
+      const sampleRate = 8000;
+      const numSamples = sampleRate * 2;
+      const buffer = new ArrayBuffer(44 + numSamples * 2);
+      const view = new DataView(buffer);
+      const writeStr = (offset, str) => {
+        for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+      };
+      writeStr(0, 'RIFF');
+      view.setUint32(4, 36 + numSamples * 2, true);
+      writeStr(8, 'WAVE');
+      writeStr(12, 'fmt ');
+      view.setUint32(16, 16, true);
+      view.setUint16(20, 1, true);
+      view.setUint16(22, 1, true);
+      view.setUint32(24, sampleRate, true);
+      view.setUint32(28, sampleRate * 2, true);
+      view.setUint16(32, 2, true);
+      view.setUint16(34, 16, true);
+      writeStr(36, 'data');
+      view.setUint32(40, numSamples * 2, true);
+      for (let i = 0; i < numSamples; i++) {
+        view.setInt16(44 + i * 2, (i % 2 === 0 ? 1 : -1), true);
+      }
+      silentWavUrl = URL.createObjectURL(new Blob([buffer], { type: 'audio/wav' }));
+      return silentWavUrl;
+    }
+
+    function startBackgroundKeepAlive() {
+      try {
+        unlockAudio();
+        const bgAudio = document.getElementById('bg-keepalive-audio');
+        if (bgAudio) {
+          if (!bgAudio.src) bgAudio.src = createSilentWavUrl();
+          bgAudio.volume = 0.01;
+          bgAudio.play().catch(() => {});
+        }
+        if (audioCtx && !keepAliveSource) {
+          const sampleRate = audioCtx.sampleRate || 44100;
+          const silentBuf = audioCtx.createBuffer(1, sampleRate * 2, sampleRate);
+          const data = silentBuf.getChannelData(0);
+          for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * 0.00001;
+          keepAliveSource = audioCtx.createBufferSource();
+          keepAliveSource.buffer = silentBuf;
+          keepAliveSource.loop = true;
+          keepAliveSource.connect(audioCtx.destination);
+          keepAliveSource.start(0);
+        }
+        updateLockScreenMediaSession();
+      } catch (e) {}
+    }
+
+    function stopBackgroundKeepAlive() {
+      try {
+        const bgAudio = document.getElementById('bg-keepalive-audio');
+        if (bgAudio) bgAudio.pause();
+        if (keepAliveSource) {
+          keepAliveSource.stop();
+          keepAliveSource.disconnect();
+          keepAliveSource = null;
+        }
+        if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
+      } catch (e) {}
+    }
+
+    function updateLockScreenMediaSession() {
+      if (!('mediaSession' in navigator)) return;
+      try {
+        const isHold = (state.mode === 'static' && state.staPhase === 'hold') || (state.mode !== 'static' && state.phase === 'hold');
+        const phaseLabel = state.mode === 'static'
+          ? (isHold ? `스태틱 숨참기 (${formatMMSS(state.staticElapsedSeconds)})` : `스태틱 준비호흡 (${formatMMSS(state.remainingSeconds)})`)
+          : `${state.currentRoundIndex + 1}/${state.rounds.length}R ${isHold ? '숨참기' : '준비호흡'} (${formatMMSS(state.remainingSeconds)})`;
+
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: phaseLabel,
+          artist: 'SPIRA(숨) 프리다이빙 트레이닝',
+          album: '백그라운드 & 잠금화면 가이드'
+        });
+        navigator.mediaSession.playbackState = state.isRunning ? 'playing' : 'paused';
+      } catch (e) {}
+    }
+
+    async function requestWakeLock() {
+      try {
+        if ('wakeLock' in navigator && !wakeLockSentinel) {
+          wakeLockSentinel = await navigator.wakeLock.request('screen');
+          wakeLockSentinel.addEventListener('release', () => { wakeLockSentinel = null; });
+        }
+      } catch (e) {}
+    }
+
+    function releaseWakeLock() {
+      try {
+        if (wakeLockSentinel) {
+          wakeLockSentinel.release();
+          wakeLockSentinel = null;
+        }
+      } catch (e) {}
+    }
+
+    function drawPipFrame() {
+      const canvas = document.getElementById('pip-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      const isHold = (state.mode === 'static' && state.staPhase === 'hold') || (state.mode !== 'static' && state.phase === 'hold');
+      ctx.fillStyle = isHold ? '#041c32' : '#1c1917';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = isHold ? '#38bdf8' : '#fbbf24';
+      ctx.lineWidth = 8;
+      ctx.strokeRect(4, 4, canvas.width - 8, canvas.height - 8);
+      ctx.fillStyle = isHold ? '#7dd3fc' : '#fde68a';
+      ctx.font = 'bold 24px sans-serif';
+      ctx.textAlign = 'center';
+      const headerText = state.mode === 'static'
+        ? (isHold ? '스태틱 숨참기 (HOLD)' : '스태틱 준비호흡')
+        : `${state.currentRoundIndex + 1}/${state.rounds.length}R · ${isHold ? '숨참기' : '준비호흡'}`;
+      ctx.fillText(headerText, canvas.width / 2, 56);
+      const timeStr = (state.mode === 'static' && state.staPhase === 'hold')
+        ? formatMMSS(state.staticElapsedSeconds)
+        : formatMMSS(state.remainingSeconds);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 84px monospace';
+      ctx.fillText(timeStr, canvas.width / 2, 152);
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = 'bold 18px sans-serif';
+      ctx.fillText(state.isRunning ? 'SPIRA(숨) 백그라운드 실행 중' : '일시 정지됨', canvas.width / 2, 194);
+    }
+
+    async function openFloatingPipTimer() {
+      try {
+        const canvas = document.getElementById('pip-canvas');
+        const video = document.getElementById('pip-video');
+        if (!canvas || !video || !document.pictureInPictureEnabled) return;
+        drawPipFrame();
+        if (!video.srcObject) video.srcObject = canvas.captureStream(10);
+        await video.play();
+        if (document.pictureInPictureElement !== video) await video.requestPictureInPicture();
+      } catch (e) {}
+    }
+
+    async function toggleFloatingPipTimer() {
+      try {
+        if (document.pictureInPictureElement) {
+          await document.exitPictureInPicture();
+        } else {
+          await openFloatingPipTimer();
+        }
+      } catch (e) {
+        showToast('최근 앱 버튼(III) → SPIRA 아이콘 → [팝업 화면으로 보기]를 이용해 주세요.');
+      }
+    }
+
+    function formatMMSS(totalSec) {
+      const s = Math.max(0, Math.floor(totalSec));
+      return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+    }
+
+    function formatKoreanDuration(totalSec) {
+      const m = Math.floor(totalSec / 60);
+      const s = totalSec % 60;
+      if (m > 0 && s > 0) return `${m}분 ${s}초`;
+      if (m > 0) return `${m}분`;
+      return `${s}초`;
+    }
+
+    function generateTableFromPB(mode, pbSec) {
+      const safePB = Math.max(30, pbSec);
+      const list = [];
+      if (mode === 'co2') {
+        const fixedHold = Math.max(20, Math.round((safePB * 0.5) / 5) * 5);
+        const startBreathe = Math.max(90, Math.min(150, fixedHold + 60));
+        for (let i = 0; i < 8; i++) {
+          list.push({ breathe: Math.max(20, startBreathe - i * 15), hold: fixedHold });
+        }
+      } else {
+        const minHold = Math.max(20, Math.round((safePB * 0.4) / 5) * 5);
+        const maxHold = Math.max(minHold + 20, Math.round((safePB * 0.8) / 5) * 5);
+        const step = (maxHold - minHold) / 7;
+        for (let i = 0; i < 8; i++) {
+          list.push({ breathe: 120, hold: Math.round((minHold + step * i) / 5) * 5 });
+        }
+      }
+      return list;
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          mode: state.mode,
+          pbSeconds: state.pbSeconds,
+          rounds: state.rounds,
+          voiceEnabled: state.voiceEnabled,
+          beepEnabled: state.beepEnabled,
+          staticPrepSeconds: state.staticPrepSeconds,
+          staticHistory: state.staticHistory
+        }));
+      } catch (e) {}
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return false;
+        const parsed = JSON.parse(raw);
+        if (parsed.mode) state.mode = parsed.mode;
+        if (typeof parsed.pbSeconds === 'number') state.pbSeconds = parsed.pbSeconds;
+        if (Array.isArray(parsed.rounds) && parsed.rounds.length > 0) state.rounds = parsed.rounds;
+        if (typeof parsed.voiceEnabled === 'boolean') state.voiceEnabled = parsed.voiceEnabled;
+        if (typeof parsed.beepEnabled === 'boolean') state.beepEnabled = parsed.beepEnabled;
+        if (typeof parsed.staticPrepSeconds === 'number') state.staticPrepSeconds = parsed.staticPrepSeconds;
+        if (Array.isArray(parsed.staticHistory)) state.staticHistory = parsed.staticHistory;
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function updateAudioButtonsUI() {
+      const voiceBtn = document.getElementById('toggle-voice-btn');
+      document.getElementById('voice-icon').textContent = state.voiceEnabled ? '🗣️' : '🔇';
+      document.getElementById('voice-label').textContent = state.voiceEnabled ? '음성 ON' : '음성 OFF';
+      voiceBtn.className = state.voiceEnabled ? 'chip-btn active-cyan' : 'chip-btn muted';
+
+      const beepBtn = document.getElementById('toggle-beep-btn');
+      document.getElementById('beep-icon').textContent = state.beepEnabled ? '🥁' : '🔕';
+      document.getElementById('beep-label').textContent = state.beepEnabled ? '북소리 ON' : '북소리 OFF';
+      beepBtn.className = state.beepEnabled ? 'chip-btn active-sky' : 'chip-btn muted';
+    }
+
+    function updateModeUI() {
+      document.querySelectorAll('.mode-tab').forEach(btn => {
+        btn.className = btn.dataset.mode === state.mode ? 'mode-tab selected' : 'mode-tab';
+      });
+
+      const pbCard = document.getElementById('pb-generator-card');
+      const staticCard = document.getElementById('static-settings-card');
+      const scheduleSec = document.getElementById('schedule-section');
+      const staticHistSec = document.getElementById('static-history-section');
+      const skipBtn = document.getElementById('skip-btn');
+
+      if (state.mode === 'static') {
+        pbCard.classList.add('hidden');
+        staticCard.classList.remove('hidden');
+        scheduleSec.classList.add('hidden');
+        staticHistSec.classList.remove('hidden');
+        skipBtn.textContent = '숨참기 시작 ⏭';
+        renderStaticHistory();
+      } else {
+        pbCard.classList.remove('hidden');
+        staticCard.classList.add('hidden');
+        scheduleSec.classList.remove('hidden');
+        staticHistSec.classList.add('hidden');
+        skipBtn.textContent = '다음 단계 ⏭';
+
+        document.getElementById('mode-title').textContent =
+          state.mode === 'co2' ? 'CO₂ 내성 트레이닝 테이블' : 'O₂ 저산소 적응 트레이닝 테이블';
+        document.getElementById('mode-desc').textContent =
+          state.mode === 'co2'
+            ? '일정한 숨참기(PB의 50%)를 유지하며 준비 호흡 시간을 점진적으로 줄입니다.'
+            : '충분한 준비 호흡(2분)을 유지하며 숨참기 시간을 점진적으로 늘립니다.';
+        renderScheduleTable();
+      }
+
+      document.getElementById('pb-min-input').value = Math.floor(state.pbSeconds / 60);
+      document.getElementById('pb-sec-input').value = state.pbSeconds % 60;
+      document.getElementById('static-prep-sec').value = String(state.staticPrepSeconds);
+    }
+
+    function updateTimerVisuals() {
+      const ringEl = document.getElementById('timer-progress-ring');
+      const displayEl = document.getElementById('main-timer-display');
+      const phaseBadge = document.getElementById('phase-badge');
+      const nextHint = document.getElementById('next-phase-hint');
+      const roundLabel = document.getElementById('current-round-label');
+      const totalRemLabel = document.getElementById('total-remaining-label');
+      const staticFinishBtn = document.getElementById('static-finish-btn');
+      const circumference = 703.72;
+
+      if (state.mode === 'static') {
+        roundLabel.textContent = 'STATIC APNEA';
+        if (state.staPhase === 'prep') {
+          displayEl.textContent = formatMMSS(state.remainingSeconds);
+          phaseBadge.textContent = '준비 호흡';
+          phaseBadge.className = 'phase-pill breathe';
+          nextHint.textContent = '준비 호흡 종료 후 숨참기 자동 시작';
+          totalRemLabel.textContent = `준비 남은 시간 ${formatMMSS(state.remainingSeconds)}`;
+          ringEl.setAttribute('stroke', '#fbbf24');
+          ringEl.classList.remove('ring-hold-pulse');
+          ringEl.classList.add('ring-breathe-pulse');
+          const ratio = state.phaseTotalSeconds > 0 ? (state.remainingSeconds / state.phaseTotalSeconds) : 0;
+          ringEl.setAttribute('stroke-dashoffset', String(circumference * (1 - ratio)));
+          staticFinishBtn.classList.add('hidden');
+        } else {
+          displayEl.textContent = formatMMSS(state.staticElapsedSeconds);
+          phaseBadge.textContent = '숨참기 진행 중';
+          phaseBadge.className = 'phase-pill hold';
+          nextHint.textContent = `목표 PB: ${formatMMSS(state.pbSeconds)}`;
+          totalRemLabel.textContent = `경과 시간 ${formatMMSS(state.staticElapsedSeconds)}`;
+          ringEl.setAttribute('stroke', '#38bdf8');
+          ringEl.classList.remove('ring-breathe-pulse');
+          ringEl.classList.add('ring-hold-pulse');
+          const ratio = Math.min(1, state.staticElapsedSeconds / Math.max(30, state.pbSeconds));
+          ringEl.setAttribute('stroke-dashoffset', String(circumference * (1 - ratio)));
+          staticFinishBtn.classList.remove('hidden');
+        }
+        updateLockScreenMediaSession();
+        drawPipFrame();
+        return;
+      }
+
+      staticFinishBtn.classList.add('hidden');
+      const totalRounds = state.rounds.length;
+      roundLabel.textContent = `ROUND ${state.currentRoundIndex + 1} / ${totalRounds}`;
+      displayEl.textContent = formatMMSS(state.remainingSeconds);
+
+      let remTotal = state.remainingSeconds;
+      if (state.phase === 'breathe' && state.rounds[state.currentRoundIndex]) {
+        remTotal += state.rounds[state.currentRoundIndex].hold;
+      }
+      for (let i = state.currentRoundIndex + 1; i < totalRounds; i++) {
+        remTotal += state.rounds[i].breathe + state.rounds[i].hold;
+      }
+      totalRemLabel.textContent = `전체 남은 시간 ${formatMMSS(remTotal)}`;
+
+      const ratio = state.phaseTotalSeconds > 0 ? (state.remainingSeconds / state.phaseTotalSeconds) : 0;
+      ringEl.setAttribute('stroke-dashoffset', String(circumference * (1 - ratio)));
+
+      const cur = state.rounds[state.currentRoundIndex];
+      if (state.phase === 'breathe') {
+        phaseBadge.textContent = '준비 호흡';
+        phaseBadge.className = 'phase-pill breathe';
+        nextHint.textContent = cur ? `다음: 숨참기 ${formatMMSS(cur.hold)}` : '';
+        ringEl.setAttribute('stroke', '#fbbf24');
+        ringEl.classList.remove('ring-hold-pulse');
+        ringEl.classList.add('ring-breathe-pulse');
+      } else {
+        phaseBadge.textContent = '숨참기 (HOLD)';
+        phaseBadge.className = 'phase-pill hold';
+        const nextRound = state.rounds[state.currentRoundIndex + 1];
+        nextHint.textContent = nextRound ? `다음: ${state.currentRoundIndex + 2}R 준비호흡 ${formatMMSS(nextRound.breathe)}` : '마지막 라운드입니다';
+        ringEl.setAttribute('stroke', '#38bdf8');
+        ringEl.classList.remove('ring-breathe-pulse');
+        ringEl.classList.add('ring-hold-pulse');
+      }
+      updateLockScreenMediaSession();
+      drawPipFrame();
+    }
+
+    function renderScheduleTable() {
+      const listEl = document.getElementById('rounds-list');
+      if (!listEl) return;
+      document.getElementById('round-count-badge').textContent = `총 ${state.rounds.length} 라운드`;
+      const totalSec = state.rounds.reduce((acc, r) => acc + r.breathe + r.hold, 0);
+      document.getElementById('total-session-duration').textContent = `총 ${formatMMSS(totalSec)}`;
+
+      listEl.innerHTML = '';
+      state.rounds.forEach((r, idx) => {
+        const isCurrent = idx === state.currentRoundIndex && state.mode !== 'static';
+        const row = document.createElement('div');
+        row.className = isCurrent ? 'round-row active' : 'round-row';
+        row.innerHTML = `
+          <div><span class="round-num-badge">${idx + 1}R</span></div>
+          <div class="round-inputs">
+            <label class="round-field" style="color:#fde68a;">
+              <span>호흡</span>
+              <input type="number" min="5" max="600" step="5" value="${r.breathe}" data-idx="${idx}" data-field="breathe" class="round-edit-input" />
+              <span>초</span>
+            </label>
+            <label class="round-field" style="color:#bae6fd;">
+              <span>숨참기</span>
+              <input type="number" min="5" max="600" step="5" value="${r.hold}" data-idx="${idx}" data-field="hold" class="round-edit-input" />
+              <span>초</span>
+            </label>
+            ${state.rounds.length > 1 ? `<button type="button" data-del-idx="${idx}" class="del-btn">✕</button>` : ''}
+          </div>
+        `;
+        listEl.appendChild(row);
+      });
+
+      listEl.querySelectorAll('.round-edit-input').forEach(inp => {
+        inp.addEventListener('change', (e) => {
+          const idx = Number(e.target.dataset.idx);
+          const field = e.target.dataset.field;
+          const val = Math.max(5, Math.min(900, Number(e.target.value) || 10));
+          state.rounds[idx][field] = val;
+          saveState();
+          if (!state.isRunning && idx === state.currentRoundIndex && state.phase === field) {
+            state.remainingSeconds = val;
+            state.phaseTotalSeconds = val;
+          }
+          renderScheduleTable();
+          updateTimerVisuals();
+        });
+      });
+
+      listEl.querySelectorAll('.del-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const idx = Number(e.target.dataset.delIdx);
+          if (state.rounds.length <= 1) return;
+          state.rounds.splice(idx, 1);
+          if (state.currentRoundIndex >= state.rounds.length) state.currentRoundIndex = state.rounds.length - 1;
+          saveState();
+          renderScheduleTable();
+          updateTimerVisuals();
+        });
+      });
+    }
+
+    function renderStaticHistory() {
+      const container = document.getElementById('static-history-list');
+      if (!container) return;
+      if (state.staticHistory.length === 0) {
+        container.innerHTML = '<p style="text-align:center;padding:12px;color:#7dd3fc;">아직 측정된 기록이 없습니다.</p>';
+        return;
+      }
+      container.innerHTML = '';
+      state.staticHistory.slice().reverse().forEach((item) => {
+        const div = document.createElement('div');
+        div.className = 'round-row';
+        div.innerHTML = `
+          <div>
+            <strong style="color:#67e8f9;font-size:14px;">${formatMMSS(item.seconds)}</strong>
+            <span style="color:#7dd3fc;font-size:11px;margin-left:8px;">${item.date}</span>
+          </div>
+          <button type="button" data-pb-sec="${item.seconds}" class="set-pb-from-hist btn-secondary-sm" style="color:#fde68a;">PB로 적용</button>
+        `;
+        container.appendChild(div);
+      });
+
+      container.querySelectorAll('.set-pb-from-hist').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const sec = Number(e.target.dataset.pbSec);
+          state.pbSeconds = sec;
+          saveState();
+          showToast(`최고 기록(PB)이 ${formatMMSS(sec)}로 업데이트되었습니다!`);
+        });
+      });
+    }
+
+    function triggerCountdownCues(secLeft) {
+      if (secLeft === 30 || secLeft === 20) {
+        speakKorean(`${secLeft}`);
+      } else if (secLeft <= 10 && secLeft >= 1) {
+        speakKorean(`${secLeft}`);
+        if (secLeft <= 3) playTone(92, 0.45, 'sine', 0.28);
+      }
+    }
+
+    function triggerStaticElapsedCues(elapsed) {
+      if (elapsed > 0 && elapsed % 30 === 0) {
+        speakKorean(`${formatKoreanDuration(elapsed)} 경과`);
+        playTone(92, 0.52, 'sine', 0.30);
+      }
+    }
+
+    function advancePhaseOrRound() {
+      if (state.mode === 'static') {
+        if (state.staPhase === 'prep') {
+          state.staPhase = 'hold';
+          state.staticElapsedSeconds = 0;
+          playTransitionChime(true);
+          speakKorean('숨참기 시작', true);
+        }
+        updateTimerVisuals();
+        return;
+      }
+
+      if (state.phase === 'breathe') {
+        const cur = state.rounds[state.currentRoundIndex];
+        state.phase = 'hold';
+        state.remainingSeconds = cur.hold;
+        state.phaseTotalSeconds = cur.hold;
+        playTransitionChime(true);
+        speakKorean('숨참기 시작', true);
+      } else {
+        if (state.currentRoundIndex + 1 < state.rounds.length) {
+          state.currentRoundIndex += 1;
+          const nextR = state.rounds[state.currentRoundIndex];
+          state.phase = 'breathe';
+          state.remainingSeconds = nextR.breathe;
+          state.phaseTotalSeconds = nextR.breathe;
+          playTransitionChime(false);
+          speakKorean('호흡', true);
+          renderScheduleTable();
+        } else {
+          stopTimer();
+          playTransitionChime(false);
+          speakKorean('트레이닝 완료', true);
+          showToast('🎉 축하합니다! 모든 트레이닝 라운드를 완료했습니다.');
+          resetCurrentSession(false);
+          return;
+        }
+      }
+      updateTimerVisuals();
+    }
+
+    function tickOneSecond() {
+      if (state.mode === 'static') {
+        if (state.staPhase === 'prep') {
+          state.remainingSeconds -= 1;
+          if (state.remainingSeconds <= 0) advancePhaseOrRound();
+          else {
+            triggerCountdownCues(state.remainingSeconds);
+            updateTimerVisuals();
+          }
+        } else {
+          state.staticElapsedSeconds += 1;
+          triggerStaticElapsedCues(state.staticElapsedSeconds);
+          updateTimerVisuals();
+        }
+        return;
+      }
+
+      state.remainingSeconds -= 1;
+      if (state.remainingSeconds <= 0) advancePhaseOrRound();
+      else {
+        triggerCountdownCues(state.remainingSeconds);
+        updateTimerVisuals();
+      }
+    }
+
+    function startTimer() {
+      if (state.isRunning) return;
+      unlockAudio();
+      startBackgroundKeepAlive();
+      requestWakeLock();
+
+      state.isRunning = true;
+      lastTickEpoch = Date.now();
+
+      const startBtn = document.getElementById('start-pause-btn');
+      startBtn.textContent = '⏸ 일시정지';
+      startBtn.className = 'ctrl-btn pause';
+
+      if (state.mode === 'static') {
+        if (state.staPhase === 'prep' && state.remainingSeconds === state.staticPrepSeconds) {
+          if (state.staticPrepSeconds === 0) {
+            state.staPhase = 'hold';
+            playTransitionChime(true);
+            speakKorean('숨참기 시작', true);
+          } else {
+            speakKorean('준비 호흡 시작', true);
+          }
+        }
+      } else if (state.currentRoundIndex === 0 && state.phase === 'breathe' && state.remainingSeconds === state.phaseTotalSeconds) {
+        speakKorean('준비 호흡 시작', true);
+      }
+
+      updateTimerVisuals();
+      openFloatingPipTimer();
+
+      const processWallClock = () => {
+        if (!state.isRunning) return;
+        const now = Date.now();
+        const elapsedWholeSec = Math.floor((now - lastTickEpoch) / 1000);
+        if (elapsedWholeSec >= 1) {
+          lastTickEpoch += elapsedWholeSec * 1000;
+          for (let i = 0; i < elapsedWholeSec; i++) {
+            if (!state.isRunning) break;
+            tickOneSecond();
+          }
+        }
+      };
+
+      try {
+        const workerBlob = new Blob(['setInterval(() => postMessage("tick"), 250);'], { type: 'application/javascript' });
+        bgWorker = new Worker(URL.createObjectURL(workerBlob));
+        bgWorker.onmessage = processWallClock;
+      } catch (e) {}
+
+      timerInterval = setInterval(processWallClock, 250);
+    }
+
+    function stopTimer() {
+      state.isRunning = false;
+      if (bgWorker) { bgWorker.terminate(); bgWorker = null; }
+      if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+      stopBackgroundKeepAlive();
+      releaseWakeLock();
+
+      const startBtn = document.getElementById('start-pause-btn');
+      startBtn.textContent = '▶ 시작';
+      startBtn.className = 'ctrl-btn start';
+      updateTimerVisuals();
+    }
+
+    function resetCurrentSession(announce = true) {
+      stopTimer();
+      state.currentRoundIndex = 0;
+      state.phase = 'breathe';
+      state.staticElapsedSeconds = 0;
+
+      if (state.mode === 'static') {
+        state.staPhase = state.staticPrepSeconds > 0 ? 'prep' : 'hold';
+        state.remainingSeconds = state.staticPrepSeconds;
+        state.phaseTotalSeconds = state.staticPrepSeconds;
+      } else {
+        const first = state.rounds[0] || { breathe: 120, hold: 60 };
+        state.remainingSeconds = first.breathe;
+        state.phaseTotalSeconds = first.breathe;
+      }
+
+      if (state.mode !== 'static') renderScheduleTable();
+      updateTimerVisuals();
+      if (announce) playTone(92, 0.4, 'sine', 0.26);
+    }
+
+    function switchMode(newMode) {
+      stopTimer();
+      state.mode = newMode;
+      if (newMode === 'co2' || newMode === 'o2') {
+        state.rounds = generateTableFromPB(newMode, state.pbSeconds);
+      }
+      saveState();
+      updateModeUI();
+      resetCurrentSession(false);
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && state.isRunning) {
+        unlockAudio();
+        requestWakeLock();
+        updateTimerVisuals();
+      }
+    });
+
+    function initApp() {
+      const loaded = loadState();
+      if (!loaded || !state.rounds || state.rounds.length === 0) {
+        state.rounds = generateTableFromPB(state.mode === 'static' ? 'co2' : state.mode, state.pbSeconds);
+      }
+
+      if ('speechSynthesis' in window) {
+        try { window.speechSynthesis.getVoices(); } catch (e) {}
+      }
+
+      updateAudioButtonsUI();
+      updateModeUI();
+      resetCurrentSession(false);
+
+      document.querySelectorAll('.mode-tab').forEach(btn => {
+        btn.addEventListener('click', () => switchMode(btn.dataset.mode));
+      });
+
+      document.getElementById('apply-pb-btn').addEventListener('click', () => {
+        const mins = Math.max(0, Number(document.getElementById('pb-min-input').value) || 0);
+        const secs = Math.max(0, Math.min(59, Number(document.getElementById('pb-sec-input').value) || 0));
+        const totalPB = Math.max(20, mins * 60 + secs);
+        state.pbSeconds = totalPB;
+        state.rounds = generateTableFromPB(state.mode, totalPB);
+        saveState();
+        resetCurrentSession(true);
+        showToast(`PB ${formatMMSS(totalPB)} 기준으로 시간표가 자동 계산되었습니다.`);
+      });
+
+      document.getElementById('add-round-btn').addEventListener('click', () => {
+        const last = state.rounds[state.rounds.length - 1] || { breathe: 60, hold: 60 };
+        state.rounds.push({ breathe: last.breathe, hold: last.hold });
+        saveState();
+        renderScheduleTable();
+        updateTimerVisuals();
+      });
+
+      document.getElementById('static-prep-sec').addEventListener('change', (e) => {
+        state.staticPrepSeconds = Number(e.target.value) || 0;
+        saveState();
+        resetCurrentSession(false);
+      });
+
+      document.getElementById('start-pause-btn').addEventListener('click', () => {
+        if (state.isRunning) stopTimer();
+        else startTimer();
+      });
+
+      document.getElementById('reset-btn').addEventListener('click', () => resetCurrentSession(true));
+
+      document.getElementById('skip-btn').addEventListener('click', () => {
+        unlockAudio();
+        advancePhaseOrRound();
+      });
+
+      document.getElementById('static-finish-btn').addEventListener('click', () => {
+        const recorded = state.staticElapsedSeconds;
+        stopTimer();
+        if (recorded > 0) {
+          const nowStr = new Date().toLocaleDateString('ko-KR', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+          state.staticHistory.push({ seconds: recorded, date: nowStr });
+          saveState();
+          renderStaticHistory();
+          speakKorean(`${formatKoreanDuration(recorded)} 완료`, true);
+          showToast(`스태틱 기록 ${formatMMSS(recorded)} 저장 완료!`);
+        }
+        resetCurrentSession(false);
+      });
+
+      document.getElementById('clear-static-history').addEventListener('click', () => {
+        state.staticHistory = [];
+        saveState();
+        renderStaticHistory();
+      });
+
+      document.getElementById('toggle-voice-btn').addEventListener('click', () => {
+        state.voiceEnabled = !state.voiceEnabled;
+        saveState();
+        updateAudioButtonsUI();
+      });
+
+      document.getElementById('toggle-beep-btn').addEventListener('click', () => {
+        state.beepEnabled = !state.beepEnabled;
+        saveState();
+        updateAudioButtonsUI();
+      });
+
+      document.getElementById('pip-toggle-btn').addEventListener('click', () => {
+        unlockAudio();
+        toggleFloatingPipTimer();
+      });
+
+      document.getElementById('test-voice-btn').addEventListener('click', () => {
+        unlockAudio();
+        playTransitionChime(true);
+        speakKorean('십 구 팔 칠 육 오 사 삼 이 일', true);
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initApp);
+    } else {
+      initApp();
+    }
+  </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#041526" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="manifest" href="./manifest.json" />
   <link rel="icon" type="image/png" href="./icon.png" />
   <link rel="apple-touch-icon" href="./icon.png" />
