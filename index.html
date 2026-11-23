@@ -1,4 +1,1639 @@
 <!DOCTYPE html>
+<html lang="ko" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="color-scheme" content="light" />
+  <meta name="supported-color-schemes" content="light" />
+  <meta name="theme-color" content="#12233d" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="SPIRA(숨)" />
+  <link rel="icon" type="image/png" href="./icon.png" />
+  <link rel="apple-touch-icon" sizes="512x512" href="./icon.png" />
+  <link rel="manifest" href="./manifest.json" />
+  <title>SPIRA(숨) - 프리다이빙 트레이닝 테이블</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Outfit:wght@600;700;800&family=Pacifico&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            spira: {
+              bg: '#12233d',
+              card: '#1b3154',
+              cardHover: '#233e69',
+              border: '#2f4e7d',
+              gold: '#fbbf24',
+              amber: '#f59e0b',
+              goldLight: '#fef08a',
+              aqua: '#38bdf8',
+              teal: '#2dd4bf',
+              coral: '#fb7185',
+              text: '#ffffff',
+              muted: '#cbd5e1'
+            }
+          },
+          fontFamily: {
+            sans: ['"Noto Sans KR"', 'sans-serif'],
+            display: ['"Outfit"', '"Noto Sans KR"', 'sans-serif'],
+            script: ['"Pacifico"', 'cursive']
+          },
+          boxShadow: {
+            'gold-glow': '0 0 42px rgba(251, 191, 36, 0.55), 0 0 16px rgba(245, 158, 11, 0.75)',
+            'gold-glow-strong': '0 0 60px rgba(251, 191, 36, 0.85), 0 0 26px rgba(254, 240, 138, 0.9)'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      color-scheme: light !important;
+      forced-color-adjust: none !important;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #12233d !important;
+      color: #ffffff !important;
+      color-scheme: light !important;
+      forced-color-adjust: none !important;
+      font-family: 'Noto Sans KR', sans-serif;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    img, svg, canvas, button, section, div {
+      forced-color-adjust: none !important;
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #12233d; }
+    ::-webkit-scrollbar-thumb { background: #2f4e7d; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #fbbf24; }
+
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-6px) scale(1.015); }
+    }
+    .emblem-float {
+      animation: floatSlow 4.5s ease-in-out infinite;
+    }
+    .emblem-float:active {
+      transform: scale(0.96);
+      animation: none;
+    }
+
+    @keyframes holdPulse {
+      0%, 100% { filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.55)); }
+      50% { filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.95)); }
+    }
+    .ring-hold-pulse { animation: holdPulse 2.5s ease-in-out infinite; }
+
+    @keyframes breathePulse {
+      0%, 100% { filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.55)); }
+      50% { filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.95)); }
+    }
+    .ring-breathe-pulse { animation: breathePulse 2.5s ease-in-out infinite; }
+
+    .view-collapsed {
+      display: none !important;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type=number] { -moz-appearance: textfield; }
+  </style>
+</head>
+<body class="bg-spira-bg text-white selection:bg-spira-gold selection:text-spira-bg">
+
+  <!-- =====================================================================
+       1. SPLASH SCREEN (첫 화면)
+       ===================================================================== -->
+  <section id="splash-screen" class="min-h-[100dvh] flex flex-col items-center justify-center px-6 py-8 relative overflow-hidden bg-gradient-to-b from-[#162b4a] via-[#12233d] to-[#0d1a2e]">
+    <div class="absolute w-[360px] h-[360px] sm:w-[480px] sm:h-[480px] rounded-full bg-amber-400/20 blur-3xl pointer-events-none"></div>
+
+    <div class="text-center mb-7 sm:mb-9 z-10 select-none">
+      <h1 class="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl tracking-wider text-white drop-shadow-md">
+        SPIRA(숨)
+      </h1>
+      <p class="mt-3 sm:mt-4 text-base sm:text-lg md:text-xl font-normal text-slate-200 tracking-tight">
+        그림을 누르면 트레이닝 화면이 열립니다.
+      </p>
+    </div>
+
+    <button
+      id="enter-app-btn"
+      type="button"
+      aria-label="SPIRA 프리다이빙 트레이닝 시작하기"
+      class="group relative w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] md:w-[380px] md:h-[380px] rounded-full p-2 bg-gradient-to-b from-[#fef08a] via-[#fbbf24] to-[#d97706] shadow-gold-glow hover:shadow-gold-glow-strong transition-all duration-300 emblem-float cursor-pointer focus:outline-none z-10"
+    >
+      <div class="w-full h-full rounded-full overflow-hidden bg-[#12233d] relative flex items-center justify-center">
+        <img
+          id="splash-emblem-img"
+          src="./icon.png"
+          alt="SPIRA 프리다이빙 황금빛 다이버 엠블럼"
+          class="w-full h-full object-cover rounded-full select-none pointer-events-none brightness-110 contrast-105"
+        />
+      </div>
+    </button>
+
+    <div class="mt-7 flex items-center gap-2 text-xs sm:text-sm text-amber-300 font-semibold tracking-wide z-10 whitespace-nowrap">
+      <span class="w-2.5 h-2.5 rounded-full bg-amber-300 animate-ping"></span>
+      <span>엠블럼을 눌러 트레이닝 시작</span>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       2. MAIN TRAINING DASHBOARD
+       ===================================================================== -->
+  <main id="training-screen" class="view-collapsed flex flex-col max-w-2xl mx-auto px-2.5 sm:px-5 pt-3 pb-6">
+
+    <!-- Top Header & Audio Controls -->
+    <header class="flex items-center justify-between gap-1 pb-2.5 border-b border-spira-border">
+      <button
+        id="back-to-splash-btn"
+        type="button"
+        class="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-xl bg-spira-card hover:bg-spira-cardHover border border-spira-border transition-colors cursor-pointer whitespace-nowrap shrink-0"
+        title="첫 화면으로 돌아가기"
+      >
+        <img src="./icon.png" alt="SPIRA" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full object-cover border border-amber-300/70 shrink-0" />
+        <span class="font-display font-bold text-xs sm:text-base text-white">
+          SPIRA<span class="text-amber-300">(숨)</span>
+        </span>
+      </button>
+
+      <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
+        <button
+          id="install-guide-btn"
+          type="button"
+          class="px-1.5 sm:px-2.5 py-1 rounded-xl bg-amber-400/20 hover:bg-amber-400/30 active:scale-95 border border-amber-300/60 text-amber-200 text-[10px] sm:text-xs font-bold transition-all cursor-pointer whitespace-nowrap"
+        >
+          📲 설치
+        </button>
+
+        <button
+          id="test-audio-btn"
+          type="button"
+          class="px-1.5 sm:px-2.5 py-1 rounded-xl bg-amber-400/25 hover:bg-amber-400/35 active:scale-95 border border-amber-300/60 text-amber-200 text-[10px] sm:text-xs font-bold transition-all cursor-pointer whitespace-nowrap"
+        >
+          🔊 테스트
+        </button>
+
+        <button
+          id="toggle-tts-btn"
+          type="button"
+          aria-pressed="true"
+          class="px-1.5 sm:px-2 py-1 rounded-xl bg-sky-400/20 border border-sky-300/50 text-sky-200 text-[10px] sm:text-xs font-bold transition-all cursor-pointer whitespace-nowrap"
+        >
+          음성 ON
+        </button>
+
+        <button
+          id="toggle-beep-btn"
+          type="button"
+          aria-pressed="true"
+          class="px-1.5 sm:px-2 py-1 rounded-xl bg-amber-400/20 border border-amber-300/50 text-amber-200 text-[10px] sm:text-xs font-bold transition-all cursor-pointer whitespace-nowrap"
+        >
+          비프음 ON
+        </button>
+      </div>
+    </header>
+
+    <!-- Mode Switcher Tabs -->
+    <nav class="grid grid-cols-3 gap-1.5 p-1.5 mt-2.5 rounded-2xl bg-spira-card border border-spira-border" aria-label="트레이닝 모드 선택">
+      <button
+        type="button"
+        data-mode="co2"
+        class="mode-tab py-2 px-2 rounded-xl text-xs sm:text-sm font-extrabold transition-all cursor-pointer bg-gradient-to-r from-amber-300 to-amber-500 text-slate-950 shadow-md whitespace-nowrap"
+      >
+        CO2 테이블
+      </button>
+      <button
+        type="button"
+        data-mode="o2"
+        class="mode-tab py-2 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer text-slate-200 hover:text-white whitespace-nowrap"
+      >
+        O2 테이블
+      </button>
+      <button
+        type="button"
+        data-mode="static"
+        class="mode-tab py-2 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer text-slate-200 hover:text-white whitespace-nowrap"
+      >
+        스태틱(STA)
+      </button>
+    </nav>
+
+    <!-- PRIMARY TIMER CARD -->
+    <section class="mt-2.5 p-4 sm:p-5 rounded-3xl bg-gradient-to-b from-[#1e375e] to-[#152847] border border-spira-border shadow-xl flex flex-col items-center relative overflow-hidden">
+      <div class="w-full flex items-center justify-between text-xs sm:text-sm mb-1 z-10 gap-1">
+        <div class="flex items-center gap-1.5">
+          <span id="round-indicator" class="px-2.5 py-0.5 rounded-full bg-[#101e36] border border-spira-border font-bold text-white whitespace-nowrap">
+            1 / 8 라운드
+          </span>
+          <span id="wakelock-badge" class="hidden px-2 py-0.5 rounded-full bg-teal-400/20 border border-teal-300/50 text-teal-200 text-[10px] font-bold whitespace-nowrap">
+            ☀️ 백그라운드/화면유지
+          </span>
+        </div>
+        <span id="total-remaining-indicator" class="text-slate-200 font-display font-semibold text-xs sm:text-sm whitespace-nowrap">
+          남은 총 시간 18:00
+        </span>
+      </div>
+
+      <!-- Circular Progress Ring -->
+      <div class="relative w-48 h-48 sm:w-56 sm:h-56 my-1 flex items-center justify-center">
+        <svg class="w-full h-full -rotate-90 transform" viewBox="0 0 260 260">
+          <circle
+            cx="130"
+            cy="130"
+            r="112"
+            fill="none"
+            stroke="#264370"
+            stroke-width="13"
+          />
+          <circle
+            id="timer-progress-ring"
+            cx="130"
+            cy="130"
+            r="112"
+            fill="none"
+            stroke="#fbbf24"
+            stroke-width="13"
+            stroke-linecap="round"
+            stroke-dasharray="703.71"
+            stroke-dashoffset="0"
+            class="transition-all duration-300 ease-linear ring-breathe-pulse"
+          />
+        </svg>
+
+        <!-- Center Readout -->
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-3">
+          <span id="phase-badge" class="text-[11px] sm:text-xs font-extrabold tracking-wide px-3 py-0.5 rounded-full bg-amber-400/25 text-amber-200 border border-amber-300/50 mb-1 whitespace-nowrap">
+            준비 호흡
+          </span>
+          <div id="timer-display" class="font-display font-extrabold text-4xl sm:text-5xl tracking-tight text-white tabular-nums drop-shadow">
+            02:00
+          </div>
+          <p id="next-phase-hint" class="mt-1.5 text-[11px] sm:text-xs text-slate-200 font-medium whitespace-nowrap">
+            다음: 숨참기 02:12
+          </p>
+        </div>
+      </div>
+
+      <!-- Static Contraction Action Bar -->
+      <div id="sta-contraction-bar" class="hidden w-full mb-2.5 z-10">
+        <button
+          id="sta-contraction-btn"
+          type="button"
+          class="w-full py-2.5 px-4 rounded-2xl bg-sky-400/25 hover:bg-sky-400/35 active:scale-95 border border-sky-300/60 text-sky-100 font-bold text-xs sm:text-sm transition-all cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap"
+        >
+          <span class="w-2.5 h-2.5 rounded-full bg-sky-300 animate-pulse"></span>
+          <span>횡격막 수축 기록 (Contraction)</span>
+        </button>
+      </div>
+
+      <!-- Primary Control Buttons -->
+      <div class="w-full grid grid-cols-3 gap-2 mt-1 z-10">
+        <button
+          id="reset-btn"
+          type="button"
+          class="py-3 px-2 rounded-2xl bg-[#101e36] hover:bg-[#16294a] active:scale-95 border border-spira-border text-white font-bold text-xs sm:text-sm transition-all cursor-pointer flex items-center justify-center gap-1 whitespace-nowrap"
+        >
+          <svg class="w-4 h-4 text-slate-300 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span>초기화</span>
+        </button>
+
+        <button
+          id="start-pause-btn"
+          type="button"
+          class="py-3 px-2 rounded-2xl bg-gradient-to-r from-amber-300 to-amber-500 hover:brightness-105 active:scale-95 text-slate-950 font-extrabold text-sm sm:text-base shadow-lg shadow-amber-400/25 transition-all cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap"
+        >
+          <svg id="play-icon" class="w-4 h-4 sm:w-5 sm:h-5 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+          <svg id="pause-icon" class="w-4 h-4 sm:w-5 sm:h-5 hidden shrink-0" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+          </svg>
+          <span id="start-pause-label">시작</span>
+        </button>
+
+        <button
+          id="skip-btn"
+          type="button"
+          class="py-3 px-2 rounded-2xl bg-[#101e36] hover:bg-[#16294a] active:scale-95 border border-spira-border text-white font-bold text-xs sm:text-sm transition-all cursor-pointer flex items-center justify-center gap-1 whitespace-nowrap"
+        >
+          <svg class="w-4 h-4 text-amber-300 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+          </svg>
+          <span>건너뛰기</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- CO2 & O2 CONFIGURATION PANEL -->
+    <section id="table-config-panel" class="mt-3 p-3.5 sm:p-4 rounded-2xl bg-spira-card border border-spira-border space-y-3">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+        <div>
+          <span id="mode-badge" class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-400/20 text-amber-200 border border-amber-300/40">
+            CO2 내성 훈련 (숨참기 50% PB 고정)
+          </span>
+          <p id="mode-desc" class="text-xs text-slate-200 mt-1">
+            숨참기 시간을 일정하게 유지하며 준비호흡 시간을 2:00에서 0:15까지 점진적으로 줄입니다.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <div class="flex items-center gap-1 bg-[#101e36] px-2.5 py-1.5 rounded-xl border border-spira-border whitespace-nowrap">
+            <span class="text-xs text-slate-200 font-medium">나의 PB</span>
+            <input
+              id="pb-min"
+              type="number"
+              min="0"
+              max="20"
+              value="4"
+              aria-label="PB 분"
+              class="w-7 text-center bg-transparent font-display font-bold text-amber-300 text-sm focus:outline-none border-b border-amber-300/60 focus:border-amber-300"
+            />
+            <span class="text-xs text-slate-200">분</span>
+            <input
+              id="pb-sec"
+              type="number"
+              min="0"
+              max="59"
+              value="24"
+              aria-label="PB 초"
+              class="w-7 text-center bg-transparent font-display font-bold text-amber-300 text-sm focus:outline-none border-b border-amber-300/60 focus:border-amber-300"
+            />
+            <span class="text-xs text-slate-200">초</span>
+          </div>
+
+          <button
+            id="generate-table-btn"
+            type="button"
+            class="px-3 py-1.5 rounded-xl bg-amber-400/25 hover:bg-amber-400/35 active:scale-95 text-amber-200 border border-amber-300/60 text-xs font-bold transition-all cursor-pointer whitespace-nowrap"
+          >
+            PB 기반 테이블 자동 생성
+          </button>
+        </div>
+      </div>
+
+      <!-- Bulk Breathe Time Adjustment -->
+      <div class="pt-2.5 border-t border-spira-border flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-amber-200 whitespace-nowrap">준비호흡 시간 일괄 조절</span>
+          <div class="flex items-center gap-1">
+            <button
+              id="bulk-breathe-minus-btn"
+              type="button"
+              class="px-2.5 py-1 rounded-lg bg-[#101e36] hover:bg-[#16294a] active:scale-95 border border-spira-border text-xs font-bold text-white cursor-pointer whitespace-nowrap"
+            >
+              -15초
+            </button>
+            <button
+              id="bulk-breathe-plus-btn"
+              type="button"
+              class="px-2.5 py-1 rounded-lg bg-[#101e36] hover:bg-[#16294a] active:scale-95 border border-spira-border text-xs font-bold text-white cursor-pointer whitespace-nowrap"
+            >
+              +15초
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1 bg-[#101e36] px-2.5 py-1 rounded-xl border border-spira-border whitespace-nowrap">
+            <input
+              id="bulk-breathe-min"
+              type="number"
+              min="0"
+              max="15"
+              value="2"
+              aria-label="일괄 준비호흡 분"
+              class="w-7 text-center bg-transparent font-display font-bold text-amber-200 text-sm focus:outline-none border-b border-amber-300/60 focus:border-amber-300"
+            />
+            <span class="text-xs text-slate-200">분</span>
+            <input
+              id="bulk-breathe-sec"
+              type="number"
+              min="0"
+              max="59"
+              value="0"
+              aria-label="일괄 준비호흡 초"
+              class="w-7 text-center bg-transparent font-display font-bold text-amber-200 text-sm focus:outline-none border-b border-amber-300/60 focus:border-amber-300"
+            />
+            <span class="text-xs text-slate-200">초</span>
+          </div>
+
+          <button
+            id="bulk-breathe-apply-btn"
+            type="button"
+            class="px-3 py-1 rounded-xl bg-amber-400/20 hover:bg-amber-400/30 active:scale-95 border border-amber-300/50 text-amber-200 text-xs font-bold transition-all cursor-pointer whitespace-nowrap"
+          >
+            전체 적용
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATIC (STA) CONFIGURATION PANEL -->
+    <section id="static-config-panel" class="hidden mt-3 p-3.5 sm:p-4 rounded-2xl bg-spira-card border border-spira-border space-y-3">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div>
+          <span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-sky-400/20 text-sky-200 border border-sky-300/40">
+            스태틱 압니어 (STA) 준비호흡 설정
+          </span>
+          <p class="text-xs text-slate-200 mt-1">
+            준비호흡 종료 후 자동으로 숨참기 스톱워치가 시작됩니다.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <button type="button" data-sta-preset="0" class="sta-preset-btn px-2.5 py-1 rounded-lg bg-[#101e36] hover:bg-[#16294a] border border-spira-border text-xs font-bold text-slate-200 cursor-pointer whitespace-nowrap">없음</button>
+          <button type="button" data-sta-preset="60" class="sta-preset-btn px-2.5 py-1 rounded-lg bg-[#101e36] hover:bg-[#16294a] border border-spira-border text-xs font-bold text-slate-200 cursor-pointer whitespace-nowrap">1분</button>
+          <button type="button" data-sta-preset="120" class="sta-preset-btn px-2.5 py-1 rounded-lg bg-amber-400/25 border border-amber-300/60 text-xs font-bold text-amber-200 cursor-pointer whitespace-nowrap">2분</button>
+          <button type="button" data-sta-preset="180" class="sta-preset-btn px-2.5 py-1 rounded-lg bg-[#101e36] hover:bg-[#16294a] border border-spira-border text-xs font-bold text-slate-200 cursor-pointer whitespace-nowrap">3분</button>
+        </div>
+      </div>
+
+      <div class="pt-2.5 border-t border-spira-border flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-1">
+          <button type="button" data-sta-delta="-30" class="sta-delta-btn px-2 py-1 rounded-lg bg-[#101e36] hover:bg-[#16294a] active:scale-95 border border-spira-border text-xs font-bold text-white cursor-pointer whitespace-nowrap">-30초</button>
+          <button type="button" data-sta-delta="-15" class="sta-delta-btn px-2 py-1 rounded-lg bg-[#101e36] hover:bg-[#16294a] active:scale-95 border border-spira-border text-xs font-bold text-white cursor-pointer whitespace-nowrap">-15초</button>
+          <button type="button" data-sta-delta="15" class="sta-delta-btn px-2 py-1 rounded-lg bg-[#101e36] hover:bg-[#16294a] active:scale-95 border border-spira-border text-xs font-bold text-white cursor-pointer whitespace-nowrap">+15초</button>
+          <button type="button" data-sta-delta="30" class="sta-delta-btn px-2 py-1 rounded-lg bg-[#101e36] hover:bg-[#16294a] active:scale-95 border border-spira-border text-xs font-bold text-white cursor-pointer whitespace-nowrap">+30초</button>
+        </div>
+
+        <div class="flex items-center gap-1.5">
+          <div class="flex items-center gap-1 bg-[#101e36] px-2.5 py-1 rounded-xl border border-spira-border whitespace-nowrap">
+            <input
+              id="sta-prep-min"
+              type="number"
+              min="0"
+              max="15"
+              value="2"
+              aria-label="스태틱 준비호흡 분"
+              class="w-7 text-center bg-transparent font-display font-bold text-amber-200 text-sm focus:outline-none border-b border-amber-300/60 focus:border-amber-300"
+            />
+            <span class="text-xs text-slate-200">분</span>
+            <input
+              id="sta-prep-sec"
+              type="number"
+              min="0"
+              max="59"
+              value="0"
+              aria-label="스태틱 준비호흡 초"
+              class="w-7 text-center bg-transparent font-display font-bold text-amber-200 text-sm focus:outline-none border-b border-amber-300/60 focus:border-amber-300"
+            />
+            <span class="text-xs text-slate-200">초</span>
+          </div>
+
+          <button
+            id="sta-prep-apply-btn"
+            type="button"
+            class="px-3 py-1 rounded-xl bg-amber-400/25 hover:bg-amber-400/35 active:scale-95 border border-amber-300/60 text-amber-200 text-xs font-bold transition-all cursor-pointer whitespace-nowrap"
+          >
+            적용
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ROUND SCHEDULE TABLE (CO2 / O2) -->
+    <section id="table-schedule-section" class="mt-3 rounded-2xl bg-spira-card border border-spira-border overflow-hidden">
+      <div class="px-4 py-2.5 border-b border-spira-border flex items-center justify-between gap-2 bg-[#213c66]">
+        <div class="flex items-center gap-2">
+          <h3 class="font-bold text-sm text-white whitespace-nowrap">라운드 스케줄</h3>
+          <span class="text-[11px] text-slate-200 hidden sm:inline">(시간 클릭 시 개별 수정)</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <button
+            id="remove-round-btn"
+            type="button"
+            class="px-2.5 py-1 rounded-lg bg-[#101e36] hover:bg-[#16294a] border border-spira-border text-xs text-slate-200 font-semibold cursor-pointer whitespace-nowrap"
+          >
+            - 라운드
+          </button>
+          <button
+            id="add-round-btn"
+            type="button"
+            class="px-2.5 py-1 rounded-lg bg-[#101e36] hover:bg-[#16294a] border border-spira-border text-xs text-amber-300 font-semibold cursor-pointer whitespace-nowrap"
+          >
+            + 라운드
+          </button>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto max-h-[280px] overflow-y-auto">
+        <table class="w-full text-left border-collapse">
+          <thead class="sticky top-0 bg-[#16294a] text-xs text-slate-200 border-b border-spira-border z-10">
+            <tr>
+              <th class="py-2 px-4 font-bold whitespace-nowrap">라운드</th>
+              <th class="py-2 px-3 font-bold text-amber-200 whitespace-nowrap">준비 호흡</th>
+              <th class="py-2 px-3 font-bold text-sky-200 whitespace-nowrap">숨참기</th>
+              <th class="py-2 px-4 font-bold text-right whitespace-nowrap">상태</th>
+            </tr>
+          </thead>
+          <tbody id="schedule-tbody" class="divide-y divide-spira-border/70 text-sm">
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- STATIC CONTRACTION LOG (STA Mode) -->
+    <section id="static-log-section" class="hidden mt-3 rounded-2xl bg-spira-card border border-spira-border overflow-hidden">
+      <div class="px-4 py-2.5 border-b border-spira-border flex items-center justify-between bg-[#213c66]">
+        <h3 class="font-bold text-sm text-white whitespace-nowrap">수축(Contraction) 기록</h3>
+        <button
+          id="clear-laps-btn"
+          type="button"
+          class="text-xs text-slate-200 hover:text-rose-300 transition-colors cursor-pointer whitespace-nowrap"
+        >
+          기록 지우기
+        </button>
+      </div>
+      <div id="static-laps-list" class="p-3.5 space-y-2 max-h-[240px] overflow-y-auto text-sm">
+        <p class="text-center text-slate-300 py-4 text-xs">
+          숨참기 진행 중 <strong class="text-sky-200">'횡격막 수축 기록'</strong> 버튼을 누르면 시점이 기록됩니다.
+        </p>
+      </div>
+    </section>
+
+    <!-- Safety Notice -->
+    <footer class="mt-3 p-3 rounded-2xl bg-rose-900/40 border border-rose-400/50 flex items-start gap-2 text-xs text-rose-100">
+      <svg class="w-4 h-4 text-rose-300 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+      <p class="leading-relaxed">
+        <strong class="text-rose-200 font-bold">안전 수칙:</strong> 드라이 트레이닝은 반드시 편안하게 누운 상태에서 진행하고, 물속에서는 절대 혼자 훈련하지 마세요.
+      </p>
+    </footer>
+  </main>
+
+  <!-- Round Edit Modal -->
+  <div id="edit-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/75 backdrop-blur-sm px-4">
+    <div class="w-full max-w-xs rounded-3xl bg-spira-card border border-amber-300/60 p-6 shadow-2xl">
+      <h4 id="edit-modal-title" class="font-bold text-base text-white mb-4 text-center">
+        1라운드 시간 수정
+      </h4>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs text-amber-200 font-semibold mb-1.5">준비 호흡 (Breathe)</label>
+          <div class="flex items-center justify-center gap-2 bg-[#101e36] p-2.5 rounded-xl border border-spira-border">
+            <input id="modal-breathe-min" type="number" min="0" max="15" class="w-12 text-center bg-transparent font-display font-bold text-lg text-white focus:outline-none border-b border-amber-300" />
+            <span class="text-xs text-slate-200">분</span>
+            <input id="modal-breathe-sec" type="number" min="0" max="59" class="w-12 text-center bg-transparent font-display font-bold text-lg text-white focus:outline-none border-b border-amber-300" />
+            <span class="text-xs text-slate-200">초</span>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs text-sky-200 font-semibold mb-1.5">숨참기 (Hold)</label>
+          <div class="flex items-center justify-center gap-2 bg-[#101e36] p-2.5 rounded-xl border border-spira-border">
+            <input id="modal-hold-min" type="number" min="0" max="15" class="w-12 text-center bg-transparent font-display font-bold text-lg text-white focus:outline-none border-b border-sky-300" />
+            <span class="text-xs text-slate-200">분</span>
+            <input id="modal-hold-sec" type="number" min="0" max="59" class="w-12 text-center bg-transparent font-display font-bold text-lg text-white focus:outline-none border-b border-sky-300" />
+            <span class="text-xs text-slate-200">초</span>
+          </div>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-2.5 mt-6">
+        <button id="modal-cancel-btn" type="button" class="py-2.5 rounded-xl bg-[#101e36] text-slate-200 text-sm font-bold border border-spira-border cursor-pointer whitespace-nowrap">
+          취소
+        </button>
+        <button id="modal-save-btn" type="button" class="py-2.5 rounded-xl bg-gradient-to-r from-amber-300 to-amber-500 text-slate-950 text-sm font-extrabold cursor-pointer whitespace-nowrap">
+          적용
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Home Screen Install Guide Modal -->
+  <div id="install-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm px-4">
+    <div class="w-full max-w-sm rounded-3xl bg-spira-card border border-amber-300/60 p-6 shadow-2xl text-left">
+      <div class="flex items-center gap-3 mb-4">
+        <img id="install-preview-icon" src="./icon.png" alt="SPIRA 앱 아이콘" class="w-12 h-12 rounded-2xl border border-amber-300/70 bg-[#101e36] shrink-0" />
+        <div>
+          <h4 class="font-bold text-base text-white">백그라운드 실행 및 설치 안내</h4>
+          <p class="text-xs text-slate-200">다른 앱 사용 중에도 음성 안내 유지 방법</p>
+        </div>
+      </div>
+
+      <div class="space-y-3 text-xs sm:text-sm text-white bg-[#101e36] p-4 rounded-2xl border border-spira-border leading-relaxed">
+        <p class="font-bold text-amber-300">✅ 다른 앱/바탕화면에서도 음성 듣기</p>
+        <ol class="list-decimal list-inside space-y-1.5 text-slate-200">
+          <li>타이머 시작 시 <strong class="text-teal-200">백그라운드 오디오 세션</strong>이 자동 유지되어 카톡·바탕화면 이동 시에도 안내 목소리가 나옵니다.</li>
+          <li>스마트폰 <strong class="text-white">설정 → 애플리케이션 → SPIRA → 배터리 → 제한 없음</strong>으로 설정하면 절전으로 끊기지 않습니다.</li>
+        </ol>
+      </div>
+
+      <button id="install-modal-close-btn" type="button" class="w-full mt-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-300 to-amber-500 text-slate-950 text-sm font-extrabold cursor-pointer">
+        확인
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast Banner -->
+  <div id="toast-msg" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-full bg-spira-card border border-amber-300/70 text-amber-200 text-xs sm:text-sm font-bold shadow-xl opacity-0 pointer-events-none transition-opacity duration-300 whitespace-nowrap">
+    알림
+  </div>
+
+  <script>
+    /**
+     * SPIRA(숨) Freediving Training Application
+     * - Clean, verified single-file implementation
+     * - Background silent audio keep-alive & wall-clock drift-free timing
+     * - Soft meditative Korean voice guide
+     */
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        const swCode = `
+          self.addEventListener('install', (e) => self.skipWaiting());
+          self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
+          self.addEventListener('fetch', (e) => {});
+        `;
+        try {
+          const swBlob = new Blob([swCode], { type: 'application/javascript' });
+          const swUrl = URL.createObjectURL(swBlob);
+          navigator.serviceWorker.register(swUrl).catch(() => {});
+        } catch (err) {}
+      });
+    }
+
+    const state = {
+      mode: 'co2', // 'co2' | 'o2' | 'static'
+      pbSeconds: 264, // 4:24 default
+      rounds: [],
+      currentRoundIndex: 0,
+      phase: 'breathe', // 'breathe' | 'hold' | 'complete'
+      phaseTotalSeconds: 120,
+      remainingSeconds: 120,
+      staPrepSeconds: 120,
+      staPhase: 'prep', // 'prep' | 'hold'
+      staticElapsedSeconds: 0,
+      staticLaps: [],
+      isRunning: false,
+      timerInterval: null,
+      ttsEnabled: true,
+      beepEnabled: true,
+      editingRoundIndex: null
+    };
+
+    const RING_CIRCUMFERENCE = 2 * Math.PI * 112;
+
+    // =========================================================================
+    // SCREEN WAKE LOCK
+    // =========================================================================
+    let wakeLockSentinel = null;
+
+    function updateWakeLockBadge(active) {
+      const badge = document.getElementById('wakelock-badge');
+      if (!badge) return;
+      if (active) {
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    async function requestWakeLock() {
+      if (!('wakeLock' in navigator)) return;
+      try {
+        if (wakeLockSentinel) return;
+        wakeLockSentinel = await navigator.wakeLock.request('screen');
+        updateWakeLockBadge(true);
+        wakeLockSentinel.addEventListener('release', () => {
+          wakeLockSentinel = null;
+          updateWakeLockBadge(false);
+        });
+      } catch (err) {
+        updateWakeLockBadge(false);
+      }
+    }
+
+    async function releaseWakeLock() {
+      if (!wakeLockSentinel) {
+        updateWakeLockBadge(false);
+        return;
+      }
+      try {
+        await wakeLockSentinel.release();
+      } catch (err) {}
+      wakeLockSentinel = null;
+      updateWakeLockBadge(false);
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && state.isRunning) {
+        requestWakeLock();
+        unlockAudio();
+        startBackgroundKeepAlive();
+      }
+    });
+
+    // =========================================================================
+    // AUDIO & GENTLE MEDITATIVE KOREAN TTS ENGINE + BACKGROUND KEEP-ALIVE
+    // =========================================================================
+    let audioCtx = null;
+    let bgKeepAliveAudio = null;
+    let lastTickEpoch = null;
+
+    function startBackgroundKeepAlive() {
+      try {
+        if (!bgKeepAliveAudio) {
+          const sampleRate = 8000;
+          const numSamples = sampleRate;
+          const buffer = new ArrayBuffer(44 + numSamples * 2);
+          const view = new DataView(buffer);
+          const writeStr = (off, str) => {
+            for (let i = 0; i < str.length; i++) view.setUint8(off + i, str.charCodeAt(i));
+          };
+          writeStr(0, 'RIFF');
+          view.setUint32(4, 36 + numSamples * 2, true);
+          view.setUint32(8, 0x45564157, true);
+          writeStr(12, 'fmt ');
+          view.setUint32(16, 16, true);
+          view.setUint16(20, 1, true);
+          view.setUint16(22, 1, true);
+          view.setUint32(24, sampleRate, true);
+          view.setUint32(28, sampleRate * 2, true);
+          view.setUint16(32, 2, true);
+          view.setUint16(34, 16, true);
+          writeStr(36, 'data');
+          view.setUint32(40, numSamples * 2, true);
+
+          const blob = new Blob([buffer], { type: 'audio/wav' });
+          bgKeepAliveAudio = new Audio(URL.createObjectURL(blob));
+          bgKeepAliveAudio.loop = true;
+          bgKeepAliveAudio.volume = 0.01;
+        }
+        bgKeepAliveAudio.play().catch(() => {});
+
+        if ('mediaSession' in navigator) {
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: 'SPIRA(숨) 프리다이빙 트레이닝',
+            artist: '백그라운드 음성 가이드 실행 중',
+            album: 'SPIRA Freediving'
+          });
+          navigator.mediaSession.playbackState = 'playing';
+        }
+      } catch (e) {}
+    }
+
+    function stopBackgroundKeepAlive() {
+      try {
+        if (bgKeepAliveAudio) {
+          bgKeepAliveAudio.pause();
+        }
+        if ('mediaSession' in navigator) {
+          navigator.mediaSession.playbackState = 'paused';
+        }
+      } catch (e) {}
+    }
+
+    function unlockAudio() {
+      try {
+        if (!audioCtx) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          if (AudioContextClass) {
+            audioCtx = new AudioContextClass();
+          }
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        if (audioCtx) {
+          const buffer = audioCtx.createBuffer(1, 1, 22050);
+          const source = audioCtx.createBufferSource();
+          source.buffer = buffer;
+          source.connect(audioCtx.destination);
+          source.start(0);
+        }
+      } catch (e) {}
+
+      if ('speechSynthesis' in window) {
+        try {
+          window.speechSynthesis.getVoices();
+        } catch (e) {}
+      }
+    }
+
+    function playTone(freq = 432, duration = 0.25, type = 'sine', volume = 0.22) {
+      if (!state.beepEnabled) return;
+      try {
+        unlockAudio();
+        if (!audioCtx) return;
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+        gain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(volume * 0.75, audioCtx.currentTime + 0.06);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration + 0.14);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration + 0.16);
+      } catch (e) {}
+    }
+
+    function playTransitionChime(targetPhase) {
+      if (!state.beepEnabled) return;
+      if (targetPhase === 'hold') {
+        playTone(396, 0.45, 'sine', 0.22);
+        setTimeout(() => playTone(528, 0.65, 'sine', 0.2), 180);
+      } else if (targetPhase === 'breathe') {
+        playTone(432, 0.4, 'sine', 0.2);
+        setTimeout(() => playTone(648, 0.65, 'sine', 0.22), 180);
+      } else if (targetPhase === 'complete') {
+        playTone(432, 0.35, 'sine', 0.2);
+        setTimeout(() => playTone(540, 0.35, 'sine', 0.2), 180);
+        setTimeout(() => playTone(648, 0.75, 'sine', 0.24), 360);
+      }
+    }
+
+    function toSoftKoreanSpoken(text) {
+      const map = {
+        '1': '하나...',
+        '2': '둘...',
+        '3': '셋...',
+        '4': '넷...',
+        '5': '다섯...',
+        '10': '열 초...',
+        '20': '이십 초...',
+        '30': '삼십 초...'
+      };
+      if (map[text]) return map[text];
+      return text
+        .replace('1분 30', '일 분 삼십 초...')
+        .replace('2분 30', '이 분 삼십 초...')
+        .replace('3분 30', '삼 분 삼십 초...')
+        .replace('4분 30', '사 분 삼십 초...')
+        .replace('1분', '일 분...')
+        .replace('2분', '이 분...')
+        .replace('3분', '삼 분...')
+        .replace('4분', '사 분...')
+        .replace('5분', '오 분...');
+    }
+
+    function speakKorean(text) {
+      if (!state.ttsEnabled) return;
+      if (!('speechSynthesis' in window)) return;
+      try {
+        window.speechSynthesis.cancel();
+        const spoken = toSoftKoreanSpoken(text);
+        const utterance = new SpeechSynthesisUtterance(spoken);
+        utterance.lang = 'ko-KR';
+        utterance.rate = 0.84;
+        utterance.pitch = 1.04;
+        utterance.volume = 0.82;
+
+        const voices = window.speechSynthesis.getVoices();
+        const koVoices = voices.filter(v => v.lang && v.lang.toLowerCase().includes('ko'));
+        const softVoice = koVoices.find(v =>
+          /google|yuna|seoyeon|sora|natural|online|female/i.test(v.name)
+        ) || koVoices[0];
+
+        if (softVoice) {
+          utterance.voice = softVoice;
+        }
+
+        window.speechSynthesis.speak(utterance);
+      } catch (e) {}
+    }
+
+    // =========================================================================
+    // VIEW TRANSITION
+    // =========================================================================
+    function openTrainingScreen() {
+      unlockAudio();
+      const splash = document.getElementById('splash-screen');
+      const training = document.getElementById('training-screen');
+
+      splash.classList.add('view-collapsed');
+      training.classList.remove('view-collapsed');
+
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+
+    function openSplashScreen() {
+      stopInterval();
+      state.isRunning = false;
+      releaseWakeLock();
+      updateUI();
+
+      const splash = document.getElementById('splash-screen');
+      const training = document.getElementById('training-screen');
+
+      training.classList.add('view-collapsed');
+      splash.classList.remove('view-collapsed');
+
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+
+    // =========================================================================
+    // HELPERS
+    // =========================================================================
+    function formatMMSS(totalSec) {
+      const safe = Math.max(0, Math.floor(totalSec));
+      const m = Math.floor(safe / 60);
+      const s = safe % 60;
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById('toast-msg');
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.remove('opacity-0');
+      el.classList.add('opacity-100');
+      clearTimeout(el._t);
+      el._t = setTimeout(() => {
+        el.classList.remove('opacity-100');
+        el.classList.add('opacity-0');
+      }, 2200);
+    }
+
+    // =========================================================================
+    // TABLE GENERATION (CO2 & O2)
+    // =========================================================================
+    function generateTableFromPB(mode, pbSec) {
+      const safePB = Math.max(30, pbSec);
+      const numRounds = 8;
+      const list = [];
+
+      if (mode === 'co2') {
+        const fixedHold = Math.max(20, Math.round(safePB * 0.5));
+        const startBreathe = 120;
+        const endBreathe = 15;
+        const step = (startBreathe - endBreathe) / (numRounds - 1);
+
+        for (let i = 0; i < numRounds; i++) {
+          const breathe = Math.max(15, Math.round((startBreathe - step * i) / 5) * 5);
+          list.push({ breathe, hold: fixedHold });
+        }
+      } else if (mode === 'o2') {
+        const fixedBreathe = 120;
+        const startHold = Math.max(20, Math.round(safePB * 0.4));
+        const endHold = Math.max(30, Math.round(safePB * 0.8));
+        const step = (endHold - startHold) / (numRounds - 1);
+
+        for (let i = 0; i < numRounds; i++) {
+          const hold = Math.round((startHold + step * i) / 5) * 5;
+          list.push({ breathe: fixedBreathe, hold });
+        }
+      }
+      return list;
+    }
+
+    // =========================================================================
+    // TIMER CORE LOGIC (WALL-CLOCK DRIFT-FREE)
+    // =========================================================================
+    function stopInterval() {
+      if (state.timerInterval) {
+        clearInterval(state.timerInterval);
+        state.timerInterval = null;
+      }
+      lastTickEpoch = null;
+      stopBackgroundKeepAlive();
+    }
+
+    function resetTimerState() {
+      stopInterval();
+      state.isRunning = false;
+      releaseWakeLock();
+      state.currentRoundIndex = 0;
+
+      if (state.mode === 'static') {
+        state.staticElapsedSeconds = 0;
+        state.staticLaps = [];
+        if (state.staPrepSeconds > 0) {
+          state.staPhase = 'prep';
+          state.phaseTotalSeconds = state.staPrepSeconds;
+          state.remainingSeconds = state.staPrepSeconds;
+        } else {
+          state.staPhase = 'hold';
+          state.phaseTotalSeconds = state.pbSeconds;
+          state.remainingSeconds = 0;
+        }
+        renderStaticLaps();
+      } else {
+        state.phase = 'breathe';
+        const first = state.rounds[0] || { breathe: 120, hold: 120 };
+        state.phaseTotalSeconds = first.breathe;
+        state.remainingSeconds = first.breathe;
+      }
+
+      updateUI();
+    }
+
+    function toggleStartPause() {
+      unlockAudio();
+
+      if (state.mode !== 'static' && state.phase === 'complete') {
+        resetTimerState();
+      }
+
+      if (state.isRunning) {
+        state.isRunning = false;
+        stopInterval();
+        releaseWakeLock();
+        updateUI();
+        return;
+      }
+
+      state.isRunning = true;
+      lastTickEpoch = Date.now();
+      requestWakeLock();
+      startBackgroundKeepAlive();
+
+      if (state.mode === 'static') {
+        if (state.staPhase === 'prep' && state.remainingSeconds === state.phaseTotalSeconds) {
+          playTone(432, 0.25);
+        } else if (state.staPhase === 'hold' && state.staticElapsedSeconds === 0) {
+          playTransitionChime('hold');
+        }
+      } else {
+        if (state.remainingSeconds === state.phaseTotalSeconds) {
+          if (state.phase === 'breathe') {
+            playTone(432, 0.25);
+          } else if (state.phase === 'hold') {
+            playTransitionChime('hold');
+          }
+        }
+      }
+
+      state.timerInterval = setInterval(onTick, 250);
+      updateUI();
+    }
+
+    function onTick() {
+      if (!state.isRunning) return;
+
+      const now = Date.now();
+      if (!lastTickEpoch) lastTickEpoch = now;
+      const elapsedSteps = Math.floor((now - lastTickEpoch) / 1000);
+      if (elapsedSteps < 1) return;
+      lastTickEpoch += elapsedSteps * 1000;
+
+      for (let step = 0; step < elapsedSteps; step++) {
+        if (!state.isRunning) break;
+        processSingleSecondTick();
+      }
+    }
+
+    function processSingleSecondTick() {
+      if (state.mode === 'static') {
+        if (state.staPhase === 'prep') {
+          if (state.remainingSeconds > 1) {
+            state.remainingSeconds -= 1;
+            triggerCountdownCues(state.remainingSeconds);
+            updateTimerVisuals();
+          } else {
+            state.staPhase = 'hold';
+            state.staticElapsedSeconds = 0;
+            playTransitionChime('hold');
+            updateUI();
+          }
+        } else {
+          state.staticElapsedSeconds += 1;
+          triggerStaticElapsedCues(state.staticElapsedSeconds);
+          updateTimerVisuals();
+        }
+        return;
+      }
+
+      if (state.remainingSeconds > 1) {
+        state.remainingSeconds -= 1;
+        triggerCountdownCues(state.remainingSeconds);
+        updateTimerVisuals();
+      } else {
+        advanceTablePhase();
+      }
+    }
+
+    function triggerCountdownCues(secLeft) {
+      if (secLeft <= 0) return;
+
+      if (secLeft <= 10) {
+        playTone(secLeft === 1 ? 648 : (secLeft <= 5 ? 528 : 432), 0.16, 'sine', 0.18);
+      }
+
+      if (secLeft <= 5) {
+        speakKorean(String(secLeft));
+      } else if (secLeft === 10) {
+        speakKorean('10');
+      } else if (secLeft === 20) {
+        speakKorean('20');
+      } else if (secLeft % 60 === 0) {
+        const mins = secLeft / 60;
+        playTone(432, 0.2, 'sine', 0.18);
+        speakKorean(`${mins}분`);
+      } else if (secLeft % 60 === 30) {
+        const mins = Math.floor(secLeft / 60);
+        playTone(480, 0.2, 'sine', 0.18);
+        speakKorean(mins > 0 ? `${mins}분 30` : '30');
+      }
+    }
+
+    function triggerStaticElapsedCues(elapsed) {
+      if (elapsed <= 0) return;
+      if (elapsed % 60 === 0) {
+        const mins = elapsed / 60;
+        playTone(480, 0.2, 'sine', 0.18);
+        speakKorean(`${mins}분`);
+      } else if (elapsed % 60 === 30) {
+        const mins = Math.floor(elapsed / 60);
+        playTone(432, 0.18, 'sine', 0.16);
+        speakKorean(mins > 0 ? `${mins}분 30` : '30');
+      }
+    }
+
+    function advanceTablePhase() {
+      const currentRound = state.rounds[state.currentRoundIndex];
+      if (!currentRound) return;
+
+      if (state.phase === 'breathe') {
+        state.phase = 'hold';
+        state.phaseTotalSeconds = currentRound.hold;
+        state.remainingSeconds = currentRound.hold;
+        playTransitionChime('hold');
+      } else if (state.phase === 'hold') {
+        if (state.currentRoundIndex + 1 < state.rounds.length) {
+          state.currentRoundIndex += 1;
+          const nextRound = state.rounds[state.currentRoundIndex];
+          state.phase = 'breathe';
+          state.phaseTotalSeconds = nextRound.breathe;
+          state.remainingSeconds = nextRound.breathe;
+          playTransitionChime('breathe');
+        } else {
+          state.phase = 'complete';
+          state.remainingSeconds = 0;
+          state.isRunning = false;
+          stopInterval();
+          releaseWakeLock();
+          playTransitionChime('complete');
+          showToast('모든 라운드 트레이닝이 완료되었습니다!');
+        }
+      }
+      updateUI();
+    }
+
+    // =========================================================================
+    // UI RENDERING & EVENT BINDINGS
+    // =========================================================================
+    function setStaPrepSeconds(newSec) {
+      const clamped = Math.max(0, Math.min(900, Math.round(newSec)));
+      state.staPrepSeconds = clamped;
+      const mEl = document.getElementById('sta-prep-min');
+      const sEl = document.getElementById('sta-prep-sec');
+      if (mEl) mEl.value = Math.floor(clamped / 60);
+      if (sEl) sEl.value = clamped % 60;
+      if (state.mode === 'static') {
+        resetTimerState();
+      }
+    }
+
+    function updateTimerVisuals() {
+      const displayEl = document.getElementById('timer-display');
+      const ringEl = document.getElementById('timer-progress-ring');
+      const phaseBadge = document.getElementById('phase-badge');
+      const nextHint = document.getElementById('next-phase-hint');
+      const roundInd = document.getElementById('round-indicator');
+      const totalInd = document.getElementById('total-remaining-indicator');
+      const staBar = document.getElementById('sta-contraction-bar');
+
+      if (state.mode === 'static') {
+        roundInd.textContent = '스태틱 (STA)';
+        if (state.staPhase === 'prep') {
+          phaseBadge.textContent = '준비 호흡';
+          phaseBadge.className = 'text-xs sm:text-sm font-extrabold tracking-wide px-3 py-0.5 rounded-full bg-amber-400/25 text-amber-200 border border-amber-300/50 mb-1.5 whitespace-nowrap';
+          displayEl.textContent = formatMMSS(state.remainingSeconds);
+          nextHint.textContent = '준비호흡 종료 후 자동 숨참기 시작';
+          totalInd.textContent = `목표 PB ${formatMMSS(state.pbSeconds)}`;
+          staBar.classList.add('hidden');
+
+          ringEl.setAttribute('stroke', '#fbbf24');
+          ringEl.classList.remove('ring-hold-pulse');
+          ringEl.classList.add('ring-breathe-pulse');
+          const ratio = state.phaseTotalSeconds > 0 ? state.remainingSeconds / state.phaseTotalSeconds : 0;
+          ringEl.style.strokeDashoffset = RING_CIRCUMFERENCE * (1 - ratio);
+        } else {
+          phaseBadge.textContent = '숨참기 측정 중';
+          phaseBadge.className = 'text-xs sm:text-sm font-extrabold tracking-wide px-3 py-0.5 rounded-full bg-sky-400/25 text-sky-200 border border-sky-300/50 mb-1.5 whitespace-nowrap';
+          displayEl.textContent = formatMMSS(state.staticElapsedSeconds);
+          nextHint.textContent = `수축 기록 ${state.staticLaps.length}회`;
+          totalInd.textContent = `목표 PB ${formatMMSS(state.pbSeconds)}`;
+          staBar.classList.remove('hidden');
+
+          ringEl.setAttribute('stroke', '#38bdf8');
+          ringEl.classList.remove('ring-breathe-pulse');
+          ringEl.classList.add('ring-hold-pulse');
+          const ratio = Math.min(1, state.staticElapsedSeconds / Math.max(1, state.pbSeconds));
+          ringEl.style.strokeDashoffset = RING_CIRCUMFERENCE * (1 - ratio);
+        }
+        return;
+      }
+
+      staBar.classList.add('hidden');
+      roundInd.textContent = `${state.currentRoundIndex + 1} / ${state.rounds.length} 라운드`;
+
+      let totalRem = state.remainingSeconds;
+      if (state.phase === 'breathe' && state.rounds[state.currentRoundIndex]) {
+        totalRem += state.rounds[state.currentRoundIndex].hold;
+      }
+      for (let i = state.currentRoundIndex + 1; i < state.rounds.length; i++) {
+        totalRem += state.rounds[i].breathe + state.rounds[i].hold;
+      }
+      totalInd.textContent = `남은 총 시간 ${formatMMSS(totalRem)}`;
+
+      if (state.phase === 'complete') {
+        phaseBadge.textContent = '훈련 완료';
+        phaseBadge.className = 'text-xs sm:text-sm font-extrabold tracking-wide px-3 py-0.5 rounded-full bg-teal-400/25 text-teal-200 border border-teal-300/50 mb-1.5 whitespace-nowrap';
+        displayEl.textContent = '00:00';
+        nextHint.textContent = '수고하셨습니다!';
+        ringEl.setAttribute('stroke', '#2dd4bf');
+        ringEl.style.strokeDashoffset = 0;
+        return;
+      }
+
+      displayEl.textContent = formatMMSS(state.remainingSeconds);
+      const ratio = state.phaseTotalSeconds > 0 ? state.remainingSeconds / state.phaseTotalSeconds : 0;
+      ringEl.style.strokeDashoffset = RING_CIRCUMFERENCE * (1 - ratio);
+
+      const cur = state.rounds[state.currentRoundIndex];
+      if (state.phase === 'breathe') {
+        phaseBadge.textContent = '준비 호흡';
+        phaseBadge.className = 'text-xs sm:text-sm font-extrabold tracking-wide px-3 py-0.5 rounded-full bg-amber-400/25 text-amber-200 border border-amber-300/50 mb-1.5 whitespace-nowrap';
+        nextHint.textContent = cur ? `다음: 숨참기 ${formatMMSS(cur.hold)}` : '';
+        ringEl.setAttribute('stroke', '#fbbf24');
+        ringEl.classList.remove('ring-hold-pulse');
+        ringEl.classList.add('ring-breathe-pulse');
+      } else {
+        phaseBadge.textContent = '숨참기 (HOLD)';
+        phaseBadge.className = 'text-xs sm:text-sm font-extrabold tracking-wide px-3 py-0.5 rounded-full bg-sky-400/25 text-sky-200 border border-sky-300/50 mb-1.5 whitespace-nowrap';
+        const nextRound = state.rounds[state.currentRoundIndex + 1];
+        nextHint.textContent = nextRound ? `다음: ${state.currentRoundIndex + 2}R 준비호흡 ${formatMMSS(nextRound.breathe)}` : '마지막 라운드입니다';
+        ringEl.setAttribute('stroke', '#38bdf8');
+        ringEl.classList.remove('ring-breathe-pulse');
+        ringEl.classList.add('ring-hold-pulse');
+      }
+    }
+
+    function renderScheduleTable() {
+      const tbody = document.getElementById('schedule-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      state.rounds.forEach((r, idx) => {
+        const isCurrent = idx === state.currentRoundIndex && state.phase !== 'complete';
+        const isDone = idx < state.currentRoundIndex || state.phase === 'complete';
+
+        const tr = document.createElement('tr');
+        tr.className = isCurrent
+          ? 'bg-amber-400/20 text-white font-bold'
+          : isDone
+            ? 'text-slate-400'
+            : 'text-slate-100 hover:bg-spira-cardHover/70';
+
+        tr.innerHTML = `
+          <td class="py-2.5 px-4 whitespace-nowrap">${idx + 1} 라운드</td>
+          <td class="py-2.5 px-3 whitespace-nowrap">
+            <button type="button" data-edit-idx="${idx}" class="px-2.5 py-0.5 rounded bg-[#101e36] border border-spira-border text-amber-200 font-display font-bold hover:border-amber-300 cursor-pointer">
+              ${formatMMSS(r.breathe)}
+            </button>
+          </td>
+          <td class="py-2.5 px-3 whitespace-nowrap">
+            <button type="button" data-edit-idx="${idx}" class="px-2.5 py-0.5 rounded bg-[#101e36] border border-spira-border text-sky-200 font-display font-bold hover:border-sky-300 cursor-pointer">
+              ${formatMMSS(r.hold)}
+            </button>
+          </td>
+          <td class="py-2.5 px-4 text-right text-xs whitespace-nowrap">
+            ${isDone ? '<span class="text-teal-300 font-bold">완료</span>' : isCurrent ? '<span class="text-amber-300 font-extrabold">진행 중</span>' : '대기'}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      tbody.querySelectorAll('[data-edit-idx]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = Number(btn.getAttribute('data-edit-idx'));
+          openEditModal(idx);
+        });
+      });
+    }
+
+    function renderStaticLaps() {
+      const container = document.getElementById('static-laps-list');
+      if (!container) return;
+      if (state.staticLaps.length === 0) {
+        container.innerHTML = `
+          <p class="text-center text-slate-300 py-6 text-xs sm:text-sm">
+            숨참기 진행 중 <strong class="text-sky-200">'횡격막 수축 기록'</strong> 버튼을 누르면 시점이 기록됩니다.
+          </p>`;
+        return;
+      }
+
+      container.innerHTML = state.staticLaps
+        .map(
+          (sec, i) => `
+          <div class="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-[#101e36] border border-spira-border">
+            <span class="text-xs font-bold text-slate-200">${i + 1}번째 횡격막 수축</span>
+            <span class="font-display font-bold text-sky-200">${formatMMSS(sec)}</span>
+          </div>`
+        )
+        .join('');
+    }
+
+    function openEditModal(idx) {
+      const r = state.rounds[idx];
+      if (!r) return;
+      state.editingRoundIndex = idx;
+      document.getElementById('edit-modal-title').textContent = `${idx + 1}라운드 시간 수정`;
+      document.getElementById('modal-breathe-min').value = Math.floor(r.breathe / 60);
+      document.getElementById('modal-breathe-sec').value = r.breathe % 60;
+      document.getElementById('modal-hold-min').value = Math.floor(r.hold / 60);
+      document.getElementById('modal-hold-sec').value = r.hold % 60;
+
+      const modal = document.getElementById('edit-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeEditModal() {
+      const modal = document.getElementById('edit-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      state.editingRoundIndex = null;
+    }
+
+    function updateUI() {
+      const playIcon = document.getElementById('play-icon');
+      const pauseIcon = document.getElementById('pause-icon');
+      const startLabel = document.getElementById('start-pause-label');
+
+      if (playIcon && pauseIcon && startLabel) {
+        if (state.isRunning) {
+          playIcon.classList.add('hidden');
+          pauseIcon.classList.remove('hidden');
+          startLabel.textContent = '일시정지';
+        } else {
+          playIcon.classList.remove('hidden');
+          pauseIcon.classList.add('hidden');
+          startLabel.textContent = '시작';
+        }
+      }
+
+      document.querySelectorAll('.mode-tab').forEach(tab => {
+        const m = tab.getAttribute('data-mode');
+        if (m === state.mode) {
+          tab.className = 'mode-tab py-2.5 px-2 rounded-xl text-xs sm:text-sm font-extrabold transition-all cursor-pointer bg-gradient-to-r from-amber-300 to-amber-500 text-slate-950 shadow-md whitespace-nowrap';
+        } else {
+          tab.className = 'mode-tab py-2.5 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer text-slate-200 hover:text-white whitespace-nowrap';
+        }
+      });
+
+      const tableConfig = document.getElementById('table-config-panel');
+      const staticConfig = document.getElementById('static-config-panel');
+      const tableSection = document.getElementById('table-schedule-section');
+      const staticLogSection = document.getElementById('static-log-section');
+      const modeBadge = document.getElementById('mode-badge');
+      const modeDesc = document.getElementById('mode-desc');
+
+      if (state.mode === 'static') {
+        tableConfig.classList.add('hidden');
+        tableSection.classList.add('hidden');
+        staticConfig.classList.remove('hidden');
+        staticLogSection.classList.remove('hidden');
+      } else {
+        tableConfig.classList.remove('hidden');
+        tableSection.classList.remove('hidden');
+        staticConfig.classList.add('hidden');
+        staticLogSection.classList.add('hidden');
+
+        if (state.mode === 'co2') {
+          modeBadge.textContent = 'CO2 내성 훈련 (숨참기 50% PB 고정)';
+          modeDesc.textContent = '숨참기 시간을 일정하게 유지하며 준비호흡 시간을 2:00에서 0:15까지 점진적으로 줄입니다.';
+        } else {
+          modeBadge.textContent = 'O2 저산소 적응 훈련 (준비호흡 2:00 고정)';
+          modeDesc.textContent = '준비호흡 2:00을 유지하며 숨참기 시간을 40% PB에서 80% PB까지 점진적으로 늘립니다.';
+        }
+        renderScheduleTable();
+      }
+
+      updateTimerVisuals();
+    }
+
+    // =========================================================================
+    // INITIALIZATION & EVENT LISTENERS
+    // =========================================================================
+    document.addEventListener('DOMContentLoaded', () => {
+      state.rounds = generateTableFromPB(state.mode, state.pbSeconds);
+      resetTimerState();
+
+      document.getElementById('enter-app-btn')?.addEventListener('click', openTrainingScreen);
+      document.getElementById('back-to-splash-btn')?.addEventListener('click', openSplashScreen);
+
+      document.getElementById('install-guide-btn')?.addEventListener('click', () => {
+        const modal = document.getElementById('install-modal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      });
+
+      document.getElementById('install-modal-close-btn')?.addEventListener('click', () => {
+        const modal = document.getElementById('install-modal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      });
+
+      document.getElementById('test-audio-btn')?.addEventListener('click', () => {
+        unlockAudio();
+        playTransitionChime('breathe');
+        speakKorean('일 분 삼십');
+        showToast('부드러운 안내 목소리와 알림음을 테스트합니다');
+      });
+
+      document.getElementById('toggle-tts-btn')?.addEventListener('click', (e) => {
+        state.ttsEnabled = !state.ttsEnabled;
+        const btn = e.currentTarget;
+        btn.setAttribute('aria-pressed', String(state.ttsEnabled));
+        if (state.ttsEnabled) {
+          btn.textContent = '음성 ON';
+          btn.className = 'px-1.5 sm:px-2 py-1 rounded-xl bg-sky-400/20 border border-sky-300/50 text-sky-200 text-[10px] sm:text-xs font-bold transition-all cursor-pointer whitespace-nowrap';
+          unlockAudio();
+        } else {
+          btn.textContent = '음성 OFF';
+          btn.className = 'px-1.5 sm:px-2 py-1 rounded-xl bg-[#101e36] border border-spira-border text-slate-400 text-[10px] sm:text-xs font-bold transition-all cursor-pointer whitespace-nowrap';
+          if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        }
+      });
+
+      document.getElementById('toggle-beep-btn')?.addEventListener('click', (e) => {
+        state.beepEnabled = !state.beepEnabled;
+        const btn = e.currentTarget;
+        btn.setAttribute('aria-pressed', String(state.beepEnabled));
+        if (state.beepEnabled) {
+          btn.textContent = '비프음 ON';
+          btn.className = 'px-1.5 sm:px-2 py-1 rounded-xl bg-amber-400/20 border border-amber-300/50 text-amber-200 text-[10px] sm:text-xs font-bold transition-all cursor-pointer whitespace-nowrap';
+          unlockAudio();
+          playTone(432, 0.2);
+        } else {
+          btn.textContent = '비프음 OFF';
+          btn.className = 'px-1.5 sm:px-2 py-1 rounded-xl bg-[#101e36] border border-spira-border text-slate-400 text-[10px] sm:text-xs font-bold transition-all cursor-pointer whitespace-nowrap';
+        }
+      });
+
+      document.querySelectorAll('.mode-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          const nextMode = tab.getAttribute('data-mode');
+          if (!nextMode || nextMode === state.mode) return;
+          state.mode = nextMode;
+          if (state.mode !== 'static') {
+            state.rounds = generateTableFromPB(state.mode, state.pbSeconds);
+          }
+          resetTimerState();
+        });
+      });
+
+      document.getElementById('start-pause-btn')?.addEventListener('click', toggleStartPause);
+      document.getElementById('reset-btn')?.addEventListener('click', () => {
+        resetTimerState();
+        showToast('타이머가 초기화되었습니다');
+      });
+
+      document.getElementById('skip-btn')?.addEventListener('click', () => {
+        unlockAudio();
+        if (state.mode === 'static') {
+          if (state.staPhase === 'prep') {
+            state.staPhase = 'hold';
+            state.staticElapsedSeconds = 0;
+            playTransitionChime('hold');
+            updateUI();
+          } else {
+            resetTimerState();
+          }
+        } else if (state.phase !== 'complete') {
+          advanceTablePhase();
+        }
+      });
+
+      document.getElementById('generate-table-btn')?.addEventListener('click', () => {
+        const m = Math.max(0, Number(document.getElementById('pb-min').value) || 0);
+        const s = Math.max(0, Math.min(59, Number(document.getElementById('pb-sec').value) || 0));
+        state.pbSeconds = Math.max(30, m * 60 + s);
+        state.rounds = generateTableFromPB(state.mode, state.pbSeconds);
+        resetTimerState();
+        showToast(`PB ${formatMMSS(state.pbSeconds)} 기준으로 테이블이 생성되었습니다`);
+      });
+
+      document.getElementById('bulk-breathe-minus-btn')?.addEventListener('click', () => {
+        state.rounds = state.rounds.map(r => ({ ...r, breathe: Math.max(10, r.breathe - 15) }));
+        resetTimerState();
+        showToast('모든 라운드 준비호흡을 15초 줄였습니다');
+      });
+
+      document.getElementById('bulk-breathe-plus-btn')?.addEventListener('click', () => {
+        state.rounds = state.rounds.map(r => ({ ...r, breathe: Math.min(900, r.breathe + 15) }));
+        resetTimerState();
+        showToast('모든 라운드 준비호흡을 15초 늘렸습니다');
+      });
+
+      document.getElementById('bulk-breathe-apply-btn')?.addEventListener('click', () => {
+        const m = Math.max(0, Number(document.getElementById('bulk-breathe-min').value) || 0);
+        const s = Math.max(0, Math.min(59, Number(document.getElementById('bulk-breathe-sec').value) || 0));
+        const total = Math.max(10, m * 60 + s);
+        state.rounds = state.rounds.map(r => ({ ...r, breathe: total }));
+        resetTimerState();
+        showToast(`모든 라운드 준비호흡을 ${formatMMSS(total)}로 적용했습니다`);
+      });
+
+      document.querySelectorAll('.sta-preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const sec = Number(btn.getAttribute('data-sta-preset')) || 0;
+          setStaPrepSeconds(sec);
+          showToast(sec === 0 ? '준비호흡 없이 바로 시작합니다' : `스태틱 준비호흡 ${formatMMSS(sec)} 설정`);
+        });
+      });
+
+      document.querySelectorAll('.sta-delta-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const delta = Number(btn.getAttribute('data-sta-delta')) || 0;
+          setStaPrepSeconds(state.staPrepSeconds + delta);
+        });
+      });
+
+      document.getElementById('sta-prep-apply-btn')?.addEventListener('click', () => {
+        const m = Math.max(0, Number(document.getElementById('sta-prep-min').value) || 0);
+        const s = Math.max(0, Math.min(59, Number(document.getElementById('sta-prep-sec').value) || 0));
+        setStaPrepSeconds(m * 60 + s);
+        showToast(`스태틱 준비호흡 ${formatMMSS(state.staPrepSeconds)} 적용 완료`);
+      });
+
+      document.getElementById('sta-contraction-btn')?.addEventListener('click', () => {
+        if (state.mode !== 'static' || state.staPhase !== 'hold') return;
+        state.staticLaps.push(state.staticElapsedSeconds);
+        renderStaticLaps();
+        updateTimerVisuals();
+        playTone(528, 0.16);
+        showToast(`${state.staticLaps.length}번째 수축 시점 (${formatMMSS(state.staticElapsedSeconds)}) 기록됨`);
+      });
+
+      document.getElementById('clear-laps-btn')?.addEventListener('click', () => {
+        state.staticLaps = [];
+        renderStaticLaps();
+        updateTimerVisuals();
+      });
+
+      document.getElementById('add-round-btn')?.addEventListener('click', () => {
+        if (state.rounds.length >= 16) return;
+        const last = state.rounds[state.rounds.length - 1] || { breathe: 60, hold: 120 };
+        state.rounds.push({ ...last });
+        resetTimerState();
+      });
+
+      document.getElementById('remove-round-btn')?.addEventListener('click', () => {
+        if (state.rounds.length <= 1) return;
+        state.rounds.pop();
+        resetTimerState();
+      });
+
+      document.getElementById('modal-cancel-btn')?.addEventListener('click', closeEditModal);
+      document.getElementById('modal-save-btn')?.addEventListener('click', () => {
+        if (state.editingRoundIndex === null) return;
+        const bm = Math.max(0, Number(document.getElementById('modal-breathe-min').value) || 0);
+        const bs = Math.max(0, Math.min(59, Number(document.getElementById('modal-breathe-sec').value) || 0));
+        const hm = Math.max(0, Number(document.getElementById('modal-hold-min').value) || 0);
+        const hs = Math.max(0, Math.min(59, Number(document.getElementById('modal-hold-sec').value) || 0));
+
+        state.rounds[state.editingRoundIndex] = {
+          breathe: Math.max(5, bm * 60 + bs),
+          hold: Math.max(5, hm * 60 + hs)
+        };
+        resetTimerState();
+        closeEditModal();
+      });
+    });
+  </script>
+</body>
+</html><!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
