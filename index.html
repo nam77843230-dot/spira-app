@@ -1,7 +1,94 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8" /><!-- ... existing code ... -->
+    function startBackgroundKeepAlive() {
+      try {
+        unlockAudio();
+        if (!audioCtx || keepAliveSource) return;
+        const sampleRate = audioCtx.sampleRate || 44100;
+        const silentBuf = audioCtx.createBuffer(1, sampleRate * 2, sampleRate);
+        const data = silentBuf.getChannelData(0);
+        for (let i = 0; i < data.length; i++) {
+          data[i] = (Math.random() * 2 - 1) * 0.00001;
+        }
+        keepAliveSource = audioCtx.createBufferSource();
+        keepAliveSource.buffer = silentBuf;
+        keepAliveSource.loop = true;
+        keepAliveSource.connect(audioCtx.destination);
+        keepAliveSource.start(0);
+
+        updateLockScreenMediaSession();
+      } catch (e) {}
+    }
+
+    function updateLockScreenMediaSession() {
+      if (!('mediaSession' in navigator)) return;
+      try {
+        const isHold = (state.mode === 'static' && state.staPhase === 'hold') || (state.mode !== 'static' && state.phase === 'hold');
+        const phaseLabel = state.mode === 'static'
+          ? (isHold ? `스태틱 숨참기 (${formatMMSS(state.staticElapsedSeconds)})` : `스태틱 준비호흡 (${formatMMSS(state.remainingSeconds)})`)
+          : `${state.currentRoundIndex + 1}/${state.rounds.length}R ${isHold ? '숨참기' : '준비호흡'} (${formatMMSS(state.remainingSeconds)})`;
+
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: phaseLabel,
+          artist: 'SPIRA(숨) 프리다이빙 트레이닝',
+          album: '백그라운드 & 잠금화면 가이드',
+          artwork: [{ src: './icon.png', sizes: '512x512', type: 'image/png' }]
+        });
+        navigator.mediaSession.playbackState = state.isRunning ? 'playing' : 'paused';
+      } catch (e) {}
+    }
+<!-- ... existing code ... -->
+      const cur = state.rounds[state.currentRoundIndex];
+      if (state.phase === 'breathe') {
+        phaseBadge.textContent = '준비 호흡';
+        phaseBadge.className = 'text-xs sm:text-sm font-extrabold tracking-wide px-3 py-0.5 rounded-full bg-amber-400/25 text-amber-200 border border-amber-300/50 mb-1.5 whitespace-nowrap';
+        nextHint.textContent = cur ? `다음: 숨참기 ${formatMMSS(cur.hold)}` : '';
+        ringEl.setAttribute('stroke', '#fbbf24');
+        ringEl.classList.remove('ring-hold-pulse');
+        ringEl.classList.add('ring-breathe-pulse');
+      } else {
+        phaseBadge.textContent = '숨참기 (HOLD)';
+        phaseBadge.className = 'text-xs sm:text-sm font-extrabold tracking-wide px-3 py-0.5 rounded-full bg-sky-400/25 text-sky-200 border border-sky-300/50 mb-1.5 whitespace-nowrap';
+        const nextRound = state.rounds[state.currentRoundIndex + 1];
+        nextHint.textContent = nextRound ? `다음: ${state.currentRoundIndex + 2}R 준비호흡 ${formatMMSS(nextRound.breathe)}` : '마지막 라운드입니다';
+        ringEl.setAttribute('stroke', '#38bdf8');
+        ringEl.classList.remove('ring-breathe-pulse');
+        ringEl.classList.add('ring-hold-pulse');
+      }
+      updateLockScreenMediaSession();
+      drawPipFrame();
+    }
+
+    function updateLockScreenMediaSession() {
+      if (!('mediaSession' in navigator) || !state.isRunning) return;
+      try {
+        const isStaticHold = state.mode === 'static' && state.staPhase === 'hold';
+        const titleText = state.mode === 'static'
+          ? `${isStaticHold ? '숨참기' : '준비호흡'} ${formatMMSS(isStaticHold ? state.staticElapsedSeconds : state.remainingSeconds)}`
+          : `${state.currentRoundIndex + 1}/${state.rounds.length}R ${state.phase === 'hold' ? '숨참기' : '준비호흡'} ${formatMMSS(state.remainingSeconds)}`;
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: titleText,
+          artist: 'SPIRA(숨) 프리다이빙 트레이닝',
+          album: 'SPIRA Freediving',
+          artwork: [{ src: './icon.png', sizes: '512x512', type: 'image/png' }]
+        });
+      } catch (e) {}
+    }
+
+    // =========================================================================
+    // SCREEN WAKE / VISIBILITY SYNC (화면 꺼짐 후 다시 켤 때 즉시 동기화)
+    // =========================================================================
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && state.isRunning) {
+        unlockAudio();
+        requestWakeLock();
+        updateTimerVisuals();
+      }
+    });
+
+    function renderScheduleTable() {
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="color-scheme" content="light" />
   <meta name="theme-color" content="#12233d" />
