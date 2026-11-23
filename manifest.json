@@ -1,0 +1,19 @@
+{
+  "name": "SPIRA(숨) - 프리다이빙 트레이닝",
+  "short_name": "SPIRA(숨)",
+  "description": "CO2, O2 테이블 및 스태틱 프리다이빙 트레이닝 타이머",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a111e",
+  "theme_color": "#0a111e",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
